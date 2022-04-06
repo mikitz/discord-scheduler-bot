@@ -1,5 +1,5 @@
 # Discord Scheduler Bot
-This is a self-hosted Discord bot that handles scheduling. Built with the intention to handle scheduling and RSVPs for D&amp;D 5e sessions.
+This is a self-hosted Discord bot that handles scheduling. Built with the intention to handle scheduling and RSVPs for D&amp;D 5e sessions on the 3 servers for the 3 campaigns I run.
 
 ## Features
 - Have *Checkmark*, *Red X* reactions for Players
