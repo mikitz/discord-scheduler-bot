@@ -11,3 +11,8 @@ This is a self-hosted Discord bot that handles scheduling. Built with the intent
   - Remind Players who haven't confirmed or denied at a set frequency or only once at some interval before the session
 - Recurring events
 - Notify the server when a session is canceled or confirmed
+
+
+```
+pip3 install -r requirements.txt
+```

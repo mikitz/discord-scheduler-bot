@@ -1,0 +1,24 @@
+<Message 
+    id=961237331334004756 
+    channel= <TextChannel 
+        id=961222921592901745 
+        name='general' 
+        position=0 
+        nsfw=False 
+        news=False 
+        category_id=961222921592901743
+    > 
+    type=<MessageType.default: 0> 
+    author= <Member 
+        id=257448363149099008 
+        name='Mikitz' 
+        discriminator='2846' 
+        bot=False 
+        nick=None 
+        guild=<Guild 
+            id=961222921592901742 
+            name='bot test' 
+            shard_id=None 
+            chunked=False 
+            member_count=2>
+        > flags=<MessageFlags value=0>>
