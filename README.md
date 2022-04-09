@@ -23,6 +23,6 @@ This Discord bot will
 The `!sb event` takes in 6 variaables that must all be included and separated by a comma. Each variable is a string, so feel free to put whatever you want in it.
 
 #### Examples
-1. `!sb event Session 54, 2022/3/12, 4pm MST, Will the party escape the evil mage's lair?, 3, 4`
-2. `!sb event The Orcus Fight (Session 38), 3/28, 1900 CST, Can the party defeat Orcus to save the world? Find out soon!, 2, 6`
-3. `!sb event You Will Die! (Session 12), March 16th, 2pm GMT+1, Will the party be able to defeat the errant Warforged Colossus to save Waterdeep?, 3, 5`
+1. !sb event Session 54, 2022/3/12, 4pm MST, Will the party escape the evil mage's lair?, 3, 4
+2. !sb event The Orcus Fight (Session 38), 3/28, 1900 CST, Can the party defeat Orcus to save the world? Find out soon!, 2, 6
+3. !sb event You Will Die! (Session 12), March 16th, 2pm GMT+1, Will the party be able to defeat the errant Warforged Colossus to save Waterdeep?, 3, 5
