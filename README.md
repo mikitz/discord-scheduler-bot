@@ -1,5 +1,5 @@
 # Discord Scheduler Bot
-This is a self-hosted Discord bot that handles scheduling. Built with the intention to handle scheduling and RSVPs for D&amp;D 5e sessions on the 3 servers for the 3 campaigns I run.
+This is a self-hosted Discord bot that handles scheduling. Built with the intention to handle scheduling and RSVPs for D&amp;D 5e sessions on the 3 servers for the 3 campaigns I run. The status of a session (confirmed/unconfirmed/cancelled/uncancelled) is sent to the players and the GM via user mentions and 2 roles that I have manually added into the code: Player (Active) & Game Master.
 
 ## Definitions
 - MINIMUM NUMBER OF PLAYERS = The minimum number of players required in order to run a session
@@ -9,8 +9,8 @@ This is a self-hosted Discord bot that handles scheduling. Built with the intent
 
 ## Features
 This Discord bot will 
-  1. Automatically confirm a session if the `MINIMUM NUMBER OF PLAYERS >= ATTENDING PLAYERS`. 
-  2. Automatically unconfirm a session if the `MINIMUM NUMBER OF PLAYERS >= ATTENDING PLAYERS` was true, but becomes false due to a player removing the reaction.
+  1. Automatically confirm a session if the `ATTENDING PLAYERS >= MINIMUM NUMBER OF PLAYERS`. 
+  2. Automatically unconfirm a session if the `ATTENDING PLAYERS >= MINIMUM NUMBER OF PLAYERS` was true, but becomes false due to a player removing the reaction.
   3. Automatically cancel a session if `ABSENT PLAYERS > GROUP SIZE - MINIMUM NUMBER OF PLAYERS`.
   4. Automatically uncancel a session if `ABSENT PLAYERS = GROUP SIZE - MINIMUM NUMBER OF PLAYERS + 1`.
 
