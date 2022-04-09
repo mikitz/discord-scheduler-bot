@@ -38,9 +38,9 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
     - MINIMUM NUMBER OF PLAYERS = 2
     - GROUP SIZE = 6
 3. !sb event You Will Die! (Session 12), March 16th, 2pm GMT+1, , 3, 5
-  - NAME = You will Die! (Session 12)
-  - DATE = March 16th
-  - TIME = 2pm GMT+1
-  - DESCRIPTION = null
-  - MINIMUM NUMBER OF PLAYERS = 3 
-  - GROUP SIZE = 5
+    - NAME = You will Die! (Session 12)
+    - DATE = March 16th
+    - TIME = 2pm GMT+1
+    - DESCRIPTION = null
+    - MINIMUM NUMBER OF PLAYERS = 3 
+    - GROUP SIZE = 5
