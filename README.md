@@ -2,17 +2,13 @@
 This is a self-hosted Discord bot that handles scheduling. Built with the intention to handle scheduling and RSVPs for D&amp;D 5e sessions on the 3 servers for the 3 campaigns I run.
 
 ## Features
-- Have *Checkmark*, *Red X* reactions for Players
-- Have *Cancel*, *Edit* reaction for Admin
-  - Notify server on edit
-- Set a minimum number of players to confirm
-  - Auto cancel if a set number cannot attend
-- Set a deadline to RSVP before auto-canceling
-  - Remind Players who haven't confirmed or denied at a set frequency or only once at some interval before the session
-- Recurring events
-- Notify the server when a session is canceled or confirmed
-
-
+This Discord bot will 
+  1. Automatically confirm a session once the MINIMUM NUMBER OF PLAYERS have RSVPed
+  2. Automatically unconfirm a session if the MINIMUM NUMBER OF PLAYERS threshold was met, but becomes unmet by a player removing the reaction
+  3. Automatically cancel a session based on GROUP SIZE and MINIMUM NUMBER OF PLAYERS
+  4. Automatically uncancel a session if if the number of absent players is equal to `GROUP SIZE - MINIMUM NUMBER OF PLAYERS + 1`
+### Create a New Session
+The `!sb event` takes in 6 varaiables that must all be included and separated by a comma.
 ```
-pip3 install -r requirements.txt
+!sb event NAME, DATE, TIME, DESCRIPTION, MINIMUM NUMBER OF PLAYERS, GROUP SIZE
 ```
