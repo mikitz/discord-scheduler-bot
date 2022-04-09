@@ -7,6 +7,9 @@ This Discord bot will
   2. Automatically unconfirm a session if the MINIMUM NUMBER OF PLAYERS threshold was met, but becomes unmet by a player removing the reaction
   3. Automatically cancel a session based on GROUP SIZE and MINIMUM NUMBER OF PLAYERS
   4. Automatically uncancel a session if if the number of absent players is equal to `GROUP SIZE - MINIMUM NUMBER OF PLAYERS + 1`
+
+**IMPORTANT:** This Discord bot does NOT have a calendar built in, nor does it track time. We leave that up to the players and the GM. This means that a player could cancel/uncancel/confirm/unconfirm an old sessions simply by altering their reactions to those messages.
+
 ### Create a New Session
 The `!sb event` takes in 6 varaiables that must all be included and separated by a comma.
 ```
