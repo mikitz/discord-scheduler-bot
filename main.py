@@ -16,7 +16,7 @@ import datetime
 intents = discord.Intents.default()
 intents.members = True
 intents.reactions = True
-activity = discord.Activity(type=discord.ActivityType.listening, name="to !sb") # Set up the bot's activity
+activity = discord.Activity(type=discord.ActivityType.listening, name="!sb") # Set up the bot's activity
 bot = commands.Bot(command_prefix='!sb ', intents=intents, activity=activity, status=discord.Status.online) # Initialize Bot Commands
 bot.remove_command('help') # Remove the default command
 # ----------
