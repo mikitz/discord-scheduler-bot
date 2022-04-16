@@ -216,7 +216,8 @@ async def update_message(context, message_id):
         "status": 'pending',
         "title": db_msg['title'],
         "date": db_msg['date'],
-        "time": db_msg['time']
+        "time": db_msg['time'],
+        "min_players": db_msg['min_players']
     }
     db[guild][msg_index] = message_object
     print("update_message ~~ Updated Message Object:", message_object)
@@ -229,13 +230,13 @@ async def on_ready():
     print("-------------------------")
     print("Scheduler Bot is running.")
     print("-------------------------")
+    # print("Keys:", db.keys())
+    # for key in db.keys():
+    #     print(f'Deleting Key for Server "{key}"')
+    #     del db[key]
 # Function that runs when a reaction is added
 @bot.event
 async def on_resume():
-    print("Keys:", db.keys())
-    for key in db.keys():
-        print(f'Deleting Key for Server "{key}"')
-        del db[key]
     await delete_non_applicable_events()
     await auto_cancel_event()
     await monitor_changes()
@@ -372,7 +373,9 @@ async def event(ctx, *args): # !sb event
         "absentees": [],
         "title": name,
         "date": date,
-        "time": time
+        "time": time,
+        "min_players": min_players,
+        "group_size": group_size
     }
 	# Adding Data
     if guild in db.keys():
@@ -396,12 +399,13 @@ async def auto_cancel_event():
     print("Auto-cancelling...")
     print("------------------")
     for guild in bot.guilds:
+        dic_guild = guild
         guild = str(guild.name)
         if guild in db.keys():
             messages = db[guild]
             for idx, message in enumerate(messages):
-                channel = discord.utils.get(guild.channels, id=message['channel']['id'])
-                channel_message = channel.fetch_message(message['id'])
+                channel = discord.utils.get(dic_guild.channels, name=message['channel']['name'])
+                channel_message = await channel.fetch_message(message['id'])
                 title = message['title']
                 date = message['date']
                 time = message['time']
@@ -414,8 +418,8 @@ async def auto_cancel_event():
                     local_time = datetime.datetime.now(pytz.timezone('Asia/South Korea')) # Get local time and convert it to the timezone of the event
                 if local_time - datetime.timedelta(hours=24) <= local_time:
                     if len(message['attendees']) <= message['min_players']:
-                        game_master = discord.utils.get(channel_message.guild.roles, name='Game Master')
-                        player_active = discord.utils.get(channel_message.guild.roles, name='Player (Active)')
+                        game_master = discord.utils.get(channel.guild.roles, name='Game Master')
+                        player_active = discord.utils.get(channel.guild.roles, name='Player (Active)')
                         await channel_message.channel.send( # Send a message saying the session is cancelled due to not enough players RSVPing within 24 hours
                             content = f'{player_active.mention} {game_master.mention} \n *SESSION CANCELLED* -- **{title}**, scheduled for {date} at {time}, has been *CANCELLED* due to not having enough players confirm attendance before 24 hours prior to session start.', 
                             allowed_mentions = discord.AllowedMentions(roles=True)
@@ -430,16 +434,16 @@ async def monitor_changes():
     print("-----------------")
     await delete_non_applicable_events()
     for guild in bot.guilds:
+        dic_guild = guild
         guild = str(guild.name)
         if guild in db.keys():
             messages = db[guild]
             for idx, message in enumerate(messages):
                 # Message from the Channel
-                channel = discord.utils.get(guild.channels, id=message['channel']['id'])
-                channel_message = channel.fetch_message(message['id'])
-                game_master = discord.utils.get(channel_message.guild.roles, name='Game Master')
-                player_active = discord.utils.get(channel_message.guild.roles, name='Player (Active)')
-                users = await channel_message.reactions.users().flatten()
+                channel = discord.utils.get(dic_guild.channels, name=message['channel']['name'])
+                channel_message = await channel.fetch_message(message['id'])
+                game_master = discord.utils.get(channel.guild.roles, name='Game Master')
+                player_active = discord.utils.get(channel.guild.roles, name='Player (Active)')
                 reactions = await channel_message.reactions
                 mentions = ''
                 attendees = []
