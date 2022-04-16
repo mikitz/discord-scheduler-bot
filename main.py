@@ -7,9 +7,15 @@ import os
 import logging
 from discord.utils import get
 import discord # Import Discord
-from discord.ext import commands # Import commands for the bot
+from discord.ext import commands, tasks # Import commands for the bot
 from keep_alive import keep_alive
 import datetime
+# from datetime import datetime
+from dateutil.parser import parse
+from replit import db
+from dateutil.tz import gettz
+import pytz
+tzinfos = {"CST": gettz("America/Chicago")}
 # --------------
 #   Initialize
 # --------------
@@ -27,6 +33,14 @@ logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
+# -------------
+#   Functions
+# -------------
+def index_of(iterable, element_name, condition):
+    for idx, element in enumerate(iterable):
+        if iterable[idx][element_name] == condition:
+            return idx
+    return None
 # ------------------------
 #   Bot Command Fuctions
 # ------------------------
@@ -36,11 +50,52 @@ async def on_ready():
     print("-------------------------")
     print("Scheduler Bot is running.")
     print("-------------------------")
-# On Reaction Added
+    # print("Keys:", db.keys())
+    # for key in db.keys():
+    #     print(f'Deleting Key for Server "{key}"')
+    #     del db[key]
+    for guild in bot.guilds:
+        guild = str(guild.name)
+        if guild in db.keys():
+            indecies_to_delete = []
+            messages = db[guild]
+            print("**********")
+            print(f"{guild} Messages:", messages)
+            for idx, element in enumerate(messages):
+                dt = element['datetime']
+                datetime_object = parse(dt, tzinfos=tzinfos)
+                print("Datetime:", datetime_object)
+                print("Datetime:", dt)
+                new_time = datetime_object + datetime.timedelta(days=1) # Add 6 days to the event time
+                print("Delete Message Date:", new_time)
+                timezone = element['timezone']
+                if timezone == 'CST':
+                    local_time = datetime.datetime.now(pytz.timezone('US/Central')) # Get local time and convert it to the timezone of the event
+                elif timezone == 'KST':
+                    local_time = datetime.datetime.now(pytz.timezone('Asia/South Korea')) # Get local time and convert it to the timezone of the event
+                print("Current Time:", local_time)
+                if local_time >= new_time:
+                    print(f"Deleting Message at index {idx}...")
+                    indecies_to_delete.append(idx) # Append this index to a list of those that need to be deleted
+                else:
+                    print(f"Message at index {idx} still being monitored...")
+            # Delete those that need to be deleted
+            if indecies_to_delete:
+                for idx in indecies_to_delete:
+                    del messages[idx]
+                db[guild] = messages
+            print(f"'{guild}' Messages:", db[guild])
+        else:
+            print(f'Guild "{guild}" has no table.')
+    print("-------------------")
+    print("Sesh Time is Ready.")
+    print("-------------------")
+# Function that runs when a reaction is added
 @bot.event
 async def on_reaction_add(reaction, user):
     reaction_added = reaction.emoji # Get the reaction that was added
-    print(f"Getting the Reaction that was added... {reaction_added}")
+    guild = reaction.message.guild
+    print(f"Getting the Reaction that was added... {reaction_added} (Guild: {guild})")
     # if reaction_added != '❌' or reaction_added != '✅': return print("Stopping Function...") # Stop the function if it's not a reaction we're monitoring
     print("Reaction is either a ❌ or a ✅, proceeding...")
     author = str(reaction.message.author) # Get the author of the message that was reacted to
@@ -67,7 +122,12 @@ async def on_reaction_add(reaction, user):
         except: pass
         # Handle Changes
         if reaction_added == '❌': # Handle Absences
-            if absentCount > group_size - min_players:
+            if "Game Master" in str(user.roles):
+                await reaction.message.channel.send( # Send a message saying the session is cancelled due to too many players not being able to make it
+                    content = f'{mentions} \n {player_active.mention} {game_master.mention} \n *SESSION CANCELLED* -- **{title}** is *CANCELLED* which was scheduled for **{date}** at **{time}** by the Gamemaster.', 
+                    allowed_mentions = discord.AllowedMentions(roles=True)
+                )
+            elif absentCount > group_size - min_players:
                 await reaction.message.channel.send( # Send a message saying the session is cancelled due to too many players not being able to make it
                     content = f'{mentions} \n {player_active.mention} {game_master.mention} \n *SESSION CANCELLED* -- **{title}** is *CANCELLED* which was scheduled for **{date}** at **{time}** due to too many players not being able to make it.', 
                     allowed_mentions = discord.AllowedMentions(roles=True)
@@ -78,11 +138,13 @@ async def on_reaction_add(reaction, user):
                     content = f'{mentions} \n {player_active.mention} {game_master.mention} \n *SESSION CONFIRMED* -- **{title}** is *CONFIRMED* for **{date}** at **{time}**! {description}', 
                     allowed_mentions = discord.AllowedMentions(roles=True)
                 )
-# On Reaction Removed
+        await update_message(reaction.message.channel, reaction.message.id)       
+# Function that runs when a reaction is removed
 @bot.event
 async def on_reaction_remove(reaction, user):
     reaction_removed = reaction.emoji # Get the reaction that was removed
-    print(f"Getting the Reaction that was removed... {reaction_removed}")
+    guild = reaction.message.guild
+    print(f"Getting the Reaction that was removed... {reaction_removed} (Guild: {guild})")
     # if reaction_removed != '❌' or reaction_removed != '✅': return print("Stopping Function...") # Stop the function if it's not a reaction we're monitoring
     print("Reaction is either a ❌ or a ✅, proceeding...")
     author = str(reaction.message.author) # Get the author of the message that was reacted to
@@ -120,7 +182,8 @@ async def on_reaction_remove(reaction, user):
                     content = f'{mentions} \n {player_active.mention} {game_master.mention} \n *SESSION UNCONFIRMED* -- **{title}** has been *UNCONFIRMED*. Only {min_players - attendCount} more player needed to confirm the session!', 
                     allowed_mentions = discord.AllowedMentions(roles=True)
                 )
-# Help Command
+        await update_message(reaction.message.channel, reaction.message.id)
+# Function to spit out a help message
 @bot.command()
 async def help(ctx): #!sb help
     embed = discord.Embed(
@@ -144,7 +207,7 @@ async def help(ctx): #!sb help
         inline=False
     )
     await ctx.send(embed=embed)
-# Info Command
+# Function to give the user info about the bot
 @bot.command()
 async def info(ctx): # !sb info
     embed = discord.Embed(
@@ -165,18 +228,22 @@ async def info(ctx): # !sb info
     )
     await ctx.send(embed=embed)
 # New Event Command
+# Function to create a new event
 @bot.command()
 async def event(ctx, *args): # !sb event
     args_string = ' '.join(args)
     params = args_string.split(", ")
+    guild = str(ctx.message.guild)
     name = params[0]
     date = params[1]
     time = params[2]
-    try: description = params[3] # Get the Description
+    timezone = params[3]
+    dt = date + " " + time + " " + timezone
+    try: description = params[4] # Get the Description
     except: description='No description...' 
-    try: min_players = params[4] # Get the Min. Players
+    try: min_players = params[5] # Get the Min. Players
     except: min_players = ''
-    try: group_size = params[5] # Get the Group Size
+    try: group_size = params[6] # Get the Group Size
     except: group_size = 4
     embed = discord.Embed(
         title=name,
@@ -190,7 +257,7 @@ async def event(ctx, *args): # !sb event
     )
     embed.add_field(
         name='Time',
-        value=time,
+        value=f"{time} {timezone}",
         inline=False
     )
     embed.add_field(
@@ -213,10 +280,99 @@ async def event(ctx, *args): # !sb event
         content = player_active.mention, # Mention the active players that a new Session has been scheduled
         embed = embed # Add the embed to the message
     )
+    # ==============
+    # Database Stuff
+    # ==============
+    message_id = message.id # Get the ID
+    command_message_id = ctx.message.id # Get the ID for the message that was used to schedule the new event
+    command_msg = await ctx.channel.fetch_message(command_message_id) # Get the Command message object so it can be deleted
+    await command_msg.delete() # Delete the Command message
+    message_object = {
+        "id": message.id,
+        "channel": {
+            "name": message.channel.name,
+            "id": message.channel.id
+        },
+        "author": {
+            "name": message.author.name,
+            "id": message.author.id
+        },
+        "datetime": dt,
+        "timezone": timezone,
+        "attendees": [],
+        "absentees": []
+    }
+	# Adding Data
+    if guild in db.keys():
+        msgs = db[guild]
+        msgs.append(message_object)
+        db[guild] = msgs
+    else:
+        db[guild] = [message_object]
+    # ===============
+    #  Add Reactions
+    # ===============
     await message.add_reaction("✅")
     await message.add_reaction("❌")
 # -----------------
 #   Start the Bot
 # -----------------
+# Function to auto cancel sessions that don't have enough player reserved
+@tasks.loop(hours=1)
+async def auto_cancel_event():
+    for guild in bot.guilds:
+        guild = str(guild.name)
+        if guild in db.keys():
+            messages = db[guild]
+            for idx, message in enumerate(messages):
+                print("Blah man, blah")
+auto_cancel_event.start()
+# Function to monitor changes the messages
+@tasks.loop(hours=1)
+async def monitor_changes():
+    for guild in bot.guilds:
+        guild = str(guild.name)
+        if guild in db.keys():
+            messages = db[guild]
+            for idx, message in enumerate(messages):
+                print("Blah man, blah")
+monitor_changes.start()
+# Function to update a specific message in the Database
+async def update_message(context, message_id):
+    message = await context.fetch_message(message_id)
+    guild = str(message.guild)
+    msg_index = index_of(db[guild], 'id', message.id)
+    db_msg = db[guild][msg_index]
+    print("update_message ~~ DB Message:", db_msg)
+    reactions = message.reactions
+    attendees = []
+    absentees = []
+    dt = db_msg['datetime']
+    timezone = db_msg['timezone']
+    
+    for reaction in reactions: # Loop through all the reactions on this message
+        users = await reaction.users().flatten() # Get a list of users who have reacted with this emoji
+        emoj = reaction.emoji # Get the emoji
+        for user in users: # Loop through the users
+            if emoj == '✅': attendees.append(user.name) # Append user to Attendees list if they have confirmed attendance
+            elif emoj == '❌': absentees.append(user.name) # Apppend user to the Absentees list if they have confirmed absence
+                
+    message_object = {
+        "id": message_id,
+        "channel": {
+            "name": message.channel.name,
+            "id": message.channel.id
+        },
+        "author": {
+            "name": message.author.name,
+            "id": message.author.id
+        },
+        "datetime": dt,
+        "timezone": timezone,
+        "attendees": attendees,
+        "absentees": absentees
+    }
+    db[guild][msg_index] = message_object
+    print("update_message ~~ Updated Message Object:", message_object)
 keep_alive() # Start the HTTP server to that it runs 24/7
 bot.run(os.getenv("TOKEN")) # Start the bot
