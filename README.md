@@ -91,10 +91,10 @@ If you have any questions while setting it up, just message me on [Reddit](https
     ```
 2. Hit `Ctrl+S` to save.
 ### Step #5: Create a Discord bot on your Discord account
-1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from *00:02:00 to 00:03:02* to do so. That's only 1 minute and 2 seconds; you got time for that.
+1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from *00:02:00 to 00:03:02* to do so.
 2. Go change line 24 in `main.py` to whatever name you gave it.
 ### Step #6: Copy your Discord Token
-1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=182) from *00:03:02 to 00:03:10* to copy the token. That's only 8 seconds; you def got time for that.
+1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=182) from *00:03:02 to 00:03:10* to copy the token.
 2. Click on the 🔒 icon on the left side of the window to open *Secrets (Environment Variables)* on Replit
 3. Set the `key` as **TOKEN**
 4. Set the `value` as the Discord token you copied in Step 6.1
@@ -102,7 +102,7 @@ If you have any questions while setting it up, just message me on [Reddit](https
 ### Step #7: Ensure the Bot stays up forever
 1. Run the bot by clicking ` Run` on Replit.
 2. Copy the URL you see in the upper-right corner, just above the text *Hello, I am alive!*
-3. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=3794) from *01:03:14 to 01:05:20* for the rest. That's only 2 minutes and 6 seconds; please... you got time for that.
+3. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=3794) from *01:03:14 to 01:05:20* for the rest.
 ### Step #8: Run the Bot
 1. Run the bot and forget about it (Unless it goes down for whatever reason)    
     - Don't worry, the bot can still monitor all the events it needs to, as long as you bring it back online.
