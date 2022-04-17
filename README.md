@@ -46,32 +46,30 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
     - GROUP SIZE = 5
 
 ## How to Run
-### Step #1
-#### Creating a Repl
+### Step #1: Creating a Repl
 1. Go to [replit.com](https://replit.com/~) and create an account or sign in
 2. Create a new Repl by clicking the ➕ in the upper-right corner
 3. Select Python as the Language
 4. Give it whatever title you want
 5. Hi the *+ Create Repl* button
-### Step #2
-#### Setting up `main.py`
+### Step #2: Setting up `main.py`
 1. You'll see 1 file called `main.py`
 2. Open it and copy and paste the code from the bot's [main.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/main.py)
 3. Hit `Ctrl+S` to save.
-### Step #3
-#### Setting up `keep_alive.py`
+### Step #3: Setting up `keep_alive.py`
 1. Create a new file called *keep_alive.py*
 2. Open it and copy and paste the code from the bot's [keep_alive.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/keep_alive.py)
 3. Hit `Ctrl+S` to save.
-### Step #4
-#### ⚠️ Modify the Code ⚠️ in `main.py`
+### Step #4: Modify the Code in `main.py`
 1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them:
+    - **Note that I have not tested this with any timezone other than the Chicago and Seoul timezones.**
     ```
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     # Set these to whatever you need
-    tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/South Korea")}
-    timezones = {"CST": "America/Chicago", "KST": "Asia/South Korea"}
-    game_master_role_name = "Game Master"
-    player_role_name = "Player (Active)"
+    tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/South Korea")} # Add the timezones you'll be using
+    timezones = {"CST": "America/Chicago", "KST": "Asia/South Korea"} # Add the timezone again, make sure they're the same as the above
+    game_master_role_name = "Game Master" # Enter the role name of your GM
+    player_role_name = "Player (Active)" # Enter the role name of the players
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     ```
+2. **IMPORTANT:** You must change the above 4 variables, else the bot will *NOT* work on your server.

@@ -17,10 +17,10 @@ from dateutil.tz import gettz
 import pytz
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # Set these to whatever you need
-tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/South Korea")}
-timezones = {"CST": "America/Chicago", "KST": "Asia/South Korea"}
-game_master_role_name = "Game Master"
-player_role_name = "Player (Active)"
+tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # Add the timezones you'll be using
+timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezone again, make sure they're the same as the above
+game_master_role_name = "Game Master" # Enter the role name of your GM
+player_role_name = "Player (Active)" # Enter the role name of the players
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # --------------
 #   Initialize
