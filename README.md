@@ -44,3 +44,21 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
     - DESCRIPTION = null
     - MINIMUM NUMBER OF PLAYERS = 3 
     - GROUP SIZE = 5
+
+## How to Run
+### Step #1
+#### Creating a Repl
+1. Go to [replit.com](https://replit.com/~) and create an account or sign in
+2. Create a new Repl by clicking the ➕ in the upper-right corner
+3. Select Python as the Language
+4. Give it whatever title you want
+5. Hi the *+ Create Repl* button
+### Step #2
+#### Setting up `main.py`
+1. You'll see 1 file called `main.py`
+2. Open it and copy and paste the code from the bot's [main.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/main.py)
+3. Hit `Ctrl+S` to save.
+### Step #3
+#### Setting up `keep_alive.py`
+1. Create a new file called *keep_alive.py*
+2. Open it and copy and paste the code from the bot's [keep_alive.py]()

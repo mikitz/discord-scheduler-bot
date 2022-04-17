@@ -15,7 +15,13 @@ from dateutil.parser import parse
 from replit import db
 from dateutil.tz import gettz
 import pytz
-tzinfos = {"CST": gettz("America/Chicago")}
+# ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+# Set these to whatever you need
+tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/South Korea")}
+timezones = {"CST": "America/Chicago", "KST": "Asia/South Korea"}
+game_master_role_name = "Game Master"
+player_role_name = "Player (Active)"
+# ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # --------------
 #   Initialize
 # --------------
@@ -43,39 +49,33 @@ def index_of(iterable, element_name, condition):
     return None
 # Function to delete all events that already passed
 async def delete_non_applicable_events():
+    print("----------------------")
+    print("Deleting Old Events...")
+    print("----------------------")
     for guild in bot.guilds:
         guild = str(guild.name)
         if guild in db.keys():
+            print(f"*** Inspecting events for Server {guild}... ***")
             indecies_to_delete = []
             messages = db[guild]
-            print("**********")
-            print(f"{guild} Messages:", messages)
             for idx, element in enumerate(messages):
                 dt = element['datetime']
                 datetime_object = parse(dt, tzinfos=tzinfos)
-                print("Datetime:", datetime_object)
-                print("Datetime:", dt)
                 new_time = datetime_object + datetime.timedelta(days=1) # Add 6 days to the event time
-                print("Delete Message Date:", new_time)
-                timezone = element['timezone']
-                if timezone == 'CST':
-                    local_time = datetime.datetime.now(pytz.timezone('US/Central')) # Get local time and convert it to the timezone of the event
-                elif timezone == 'KST':
-                    local_time = datetime.datetime.now(pytz.timezone('Asia/South Korea')) # Get local time and convert it to the timezone of the event
-                print("Current Time:", local_time)
+                tz = element['timezone']
+                local_time = datetime.datetime.now(pytz.timezone(timezones.get(tz))) # Get local time and convert it to the timezone of the event
                 if local_time >= new_time:
                     print(f"Deleting Message at index {idx}...")
                     indecies_to_delete.append(idx) # Append this index to a list of those that need to be deleted
-                else:
-                    print(f"Message at index {idx} still being monitored...")
             # Delete those that need to be deleted
             if indecies_to_delete:
                 for idx in indecies_to_delete:
                     del messages[idx]
                 db[guild] = messages
-            print(f"'{guild}' Messages:", db[guild])
+            else:
+                print(f"No old events deleted in Server {guild}")
         else:
-            print(f'Guild "{guild}" has no table.')
+            print(f"No events found in Server {guild}.")
 # ------------------------
 #   Bot Command Fuctions
 # ------------------------
@@ -89,15 +89,6 @@ async def on_ready():
     # for key in db.keys():
     #     print(f'Deleting Key for Server "{key}"')
     #     del db[key]
-# Function that runs when a reaction is added
-@bot.event
-async def on_resume():
-    await delete_non_applicable_events()
-    await auto_cancel_event()
-    await monitor_changes()
-    print("-------------------")
-    print("Sesh Time is Ready.")
-    print("-------------------")
 # Function that runs when a reaction is added
 @bot.event
 async def on_reaction_add(reaction, user):
@@ -162,6 +153,7 @@ async def info(ctx): # !sb info
 # Function to create a new event
 @bot.command()
 async def event(ctx, *args): # !sb event
+    print("$$$ New Event Added! $$$")
     args_string = ' '.join(args)
     params = args_string.split(", ")
     guild = str(ctx.message.guild)
@@ -207,7 +199,7 @@ async def event(ctx, *args): # !sb event
         value='React with a ✅ to confirm attendance or with a ❌ to confirm absence.',
         inline=False
     )
-    player_active = discord.utils.get(ctx.guild.roles, name='Player (Active)') # Grab the Player (Active) role
+    player_active = discord.utils.get(ctx.guild.roles, name=player_role_name) # Grab the Player (Active) role
     message = await ctx.send(
         content = player_active.mention, # Mention the active players that a new Session has been scheduled
         embed = embed # Add the embed to the message
@@ -261,13 +253,16 @@ async def event(ctx, *args): # !sb event
 # Function to auto cancel sessions that don't have enough player reserved
 @tasks.loop(minutes=5)
 async def auto_cancel_event():
+    await delete_non_applicable_events()
     print("------------------")
     print("Auto-cancelling...")
     print("------------------")
+    to_delete_messages = []
     for guild in bot.guilds:
         dic_guild = guild
         guild = str(guild.name)
         if guild in db.keys():
+            print(f"*** Inspecting messages for Server {guild}... ***")
             messages = db[guild]
             for idx, message in enumerate(messages):
                 channel = discord.utils.get(dic_guild.channels, name=message['channel']['name'])
@@ -277,40 +272,46 @@ async def auto_cancel_event():
                 time = message['time']
                 dt = message['datetime']
                 datetime_object = parse(dt, tzinfos=tzinfos) 
-                timezone = message['timezone']
-                if timezone == 'CST':
-                    local_time = datetime.datetime.now(pytz.timezone('US/Central')) # Get local time and convert it to the timezone of the event
-                elif timezone == 'KST':
-                    local_time = datetime.datetime.now(pytz.timezone('Asia/South Korea')) # Get local time and convert it to the timezone of the event
-                if local_time - datetime.timedelta(hours=24) <= local_time:
+                tz = message['timezone']
+                local_time = datetime.datetime.now(pytz.timezone(timezones.get(tz))) # Get local time and convert it to the timezone of the event
+                if datetime_object - datetime.timedelta(hours=24) <= local_time:
                     if len(message['attendees']) <= int(message['min_players']):
-                        game_master = discord.utils.get(channel.guild.roles, name='Game Master')
-                        player_active = discord.utils.get(channel.guild.roles, name='Player (Active)')
+                        game_master = discord.utils.get(channel.guild.roles, name=game_master_role_name)
+                        player_active = discord.utils.get(channel.guild.roles, name=player_role_name)
                         await channel_message.channel.send( # Send a message saying the session is cancelled due to not enough players RSVPing within 24 hours
                             content = f'{player_active.mention} {game_master.mention} \n *SESSION CANCELLED* -- **{title}**, scheduled for {date} at {time}, has been *CANCELLED* due to not having enough players confirm attendance before 24 hours prior to session start.', 
                             allowed_mentions = discord.AllowedMentions(roles=True)
                         )
                     print(f'Auto-cancelling and deleting event {title}...')
-                    del db[guild][idx]
-auto_cancel_event.start()
-# Function to monitor changes the messages
-@tasks.loop(minutes=5)
-async def monitor_changes():
+                    to_delete_messages.append(idx)
+                else:
+                    print(f"No auto-cancels performed for Server {guild}.")
+        else:
+            print(f"No messages found for Server {guild}.")
+    for msg in to_delete_messages:
+        msg = int(msg)
+        del db[guild][msg]
     print("-----------------")
     print("Making Changes...")
     print("-----------------")
-    await delete_non_applicable_events()
     for guild in bot.guilds:
         dic_guild = guild
         guild = str(guild.name)
         if guild in db.keys():
+            print(f"*** Making Changes for Server {guild}... ***")
             messages = db[guild]
-            for idx, message in enumerate(messages):
-                message_id = message['id']
-                channel_id = message['channel']['id']
-                guild_id = message['guild_id']
-                await send_message_based_on_reactions(message_id, channel_id, guild_id) 
-monitor_changes.start()
+            if len(messages) > 0:
+                for idx, message in enumerate(messages):
+                    print("Message:", message)
+                    message_id = message['id']
+                    channel_id = message['channel']['id']
+                    guild_id = message['guild_id']
+                    await send_message_based_on_reactions(message_id, channel_id, guild_id) 
+            else: 
+                print(f"No changes made for Server {guild}")
+        else:
+            print(f"No messages found for Server {guild}")
+auto_cancel_event.start()
 # ===========================================
 #       Rewrite with Minimal Functions
 # ===========================================
@@ -332,8 +333,8 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
     dt = db_msg['datetime'] # Get the DateTime object from the stored Message data
     timezone = db_msg['timezone'] # Get the Timezone string from the stored Message data
     # Get stored Reaction counts from the Database
-    db_msg_attendees = len(db_msg['attendees']) - 1 # Get the number of stored Attendees less the Bot
-    db_msg_absentees = len(db_msg['absentees']) - 1 # Get the number of stored Absentees less the Bot
+    db_msg_attendees = len(db_msg['attendees']) # Get the number of stored Attendees
+    db_msg_absentees = len(db_msg['absentees']) # Get the number of stored Absentees
     # Get the current Reaction counts
     attendees = [] # Create an empty list to store the users who confirm attendance
     absentees = [] # Create an empty list to store the users who confirm absence
@@ -345,14 +346,15 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
             if emoj == '✅': attendees.append(user.name) # Append user to Attendees list if they have confirmed attendance
             elif emoj == '❌': 
                 absentees.append(user.name) # Apppend user to the Absentees list if they have confirmed absence
-                if "Game Master" in str(user.roles): 
+                if game_master_role_name in str(user.roles): 
                     game_master = True
     message_attendees = len(attendees) - 1 # Get the number of current Attendees less the Bot
     message_absentees = len(absentees) - 1 # Get the number of current Absentees less the Bot
     if db_msg_absentees == message_absentees and db_msg_attendees == message_attendees: return # If they are the same, return b/c nothing needs to be done
+    # if message_attendees
     # Get Discord Roles
-    game_master_role = discord.utils.get(guild.roles, name='Game Master')
-    player_active_role = discord.utils.get(guild.roles, name='Player (Active)')
+    game_master_role = discord.utils.get(guild.roles, name=game_master_role_name)
+    player_active_role = discord.utils.get(guild.roles, name=player_role_name)
     # Determine what message to send based on Reaction counts of the message
     status = 'pending' # Set up Status in case none of the below is met
     # Cancel Session
