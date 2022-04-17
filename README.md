@@ -85,7 +85,7 @@ The `!sb event` takes in 7 variaables that must all be included and separated by
     timezones = {"CST": "America/Chicago", "KST": "Asia/South Korea"} # Add the timezone again, make sure they're the same as the above
     game_master_role_name = "Game Master" # Enter the role name of your GM
     player_role_name = "Player (Active)" # Enter the role name of the players
-    bot_name = "Sesh TIme" # This must be the same as the name you gave it on the Discord
+    bot_name = "Sesh TIme" # This must be the same as the name you gave it on Discord
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     ```
 2. Hit `Ctrl+S` to save.

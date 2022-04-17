@@ -21,7 +21,7 @@ tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # Add th
 timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezone again, make sure they're the same as the above
 game_master_role_name = "Game Master" # Enter the role name of your GM
 player_role_name = "Player (Active)" # Enter the role name of the players
-bot_name = "Sesh Time" # This must be the same as the name you gave it on the Discord
+bot_name = "Sesh Time" # This must be the same as the name you gave it on Discord
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # --------------
 #   Initialize
