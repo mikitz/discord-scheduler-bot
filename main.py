@@ -101,6 +101,7 @@ async def on_resume():
 # Function that runs when a reaction is added
 @bot.event
 async def on_reaction_add(reaction, user):
+    if user.name == "Sesh Time": return # Don't do anything if it's Sesh Time reacting
     message_id = reaction.message.id
     channel_id = reaction.message.channel.id
     guild_id = reaction.message.guild.id
@@ -108,6 +109,7 @@ async def on_reaction_add(reaction, user):
 # Function that runs when a reaction is removed
 @bot.event
 async def on_reaction_remove(reaction, user):
+    if user.name == "Sesh Time": return # Don't do anything if it's Sesh Time reacting
     message_id = reaction.message.id
     channel_id = reaction.message.channel.id
     guild_id = reaction.message.guild.id
@@ -236,15 +238,18 @@ async def event(ctx, *args): # !sb event
         "time": time,
         "min_players": min_players,
         "group_size": group_size,
-        "guild_id": guild_id
+        "guild_id": guild_id,
+        "description": description
     }
 	# Adding Data
     if guild in db.keys():
         msgs = db[guild]
         msgs.append(message_object)
         db[guild] = msgs
+        print(f"Data added to Server {guild}:", message_object)
     else:
         db[guild] = [message_object]
+        print(f"Data added to Server {guild}:", message_object)
     # ===============
     #  Add Reactions
     # ===============
@@ -278,14 +283,15 @@ async def auto_cancel_event():
                 elif timezone == 'KST':
                     local_time = datetime.datetime.now(pytz.timezone('Asia/South Korea')) # Get local time and convert it to the timezone of the event
                 if local_time - datetime.timedelta(hours=24) <= local_time:
-                    if len(message['attendees']) <= message['min_players']:
+                    if len(message['attendees']) <= int(message['min_players']):
                         game_master = discord.utils.get(channel.guild.roles, name='Game Master')
                         player_active = discord.utils.get(channel.guild.roles, name='Player (Active)')
                         await channel_message.channel.send( # Send a message saying the session is cancelled due to not enough players RSVPing within 24 hours
                             content = f'{player_active.mention} {game_master.mention} \n *SESSION CANCELLED* -- **{title}**, scheduled for {date} at {time}, has been *CANCELLED* due to not having enough players confirm attendance before 24 hours prior to session start.', 
                             allowed_mentions = discord.AllowedMentions(roles=True)
                         )
-                    print(f'Auto-cancelling event {title}...')
+                    print(f'Auto-cancelling and deleting event {title}...')
+                    del db[guild][idx]
 auto_cancel_event.start()
 # Function to monitor changes the messages
 @tasks.loop(minutes=5)
@@ -310,16 +316,16 @@ monitor_changes.start()
 # ===========================================
 async def send_message_based_on_reactions(message_id, channel_id, guild_id):
     # Variables
-    guild = await bot.get_guild(guild_id) # Get the Guild object from the Guild ID
-    channel = await guild.get_channel(channel_id) # Get the Channel object from the Guild object
+    guild = bot.get_guild(guild_id) # Get the Guild object from the Guild ID
+    channel = guild.get_channel(channel_id) # Get the Channel object from the Guild object
     message = await channel.fetch_message(message_id) # Get the Message object from the Channel object
     reactions = message.reactions # Get the Reactions object from the Message object
     # Pull Message from Database
-    msg_index = index_of(db[guild], 'id', message.id) # Get the Index of this Message by its ID
-    db_msg = db[guild][msg_index] # Pull this Message's data from the Database
+    msg_index = index_of(db[str(guild)], 'id', message.id) # Get the Index of this Message by its ID
+    db_msg = db[str(guild)][msg_index] # Pull this Message's data from the Database
     # Get other data from the Database for this message
-    group_size = db_msg['group_size']
-    min_players = db_msg['min_players']
+    group_size = int(db_msg['group_size']) # Get the Group Size integer from the Stored Message data
+    min_players = int(db_msg['min_players']) # Get the Min. Players integer from the Stored Message data
     title = db_msg['title'] # Get the Title string from the stored Message data
     date = db_msg['date'] # Get the Date string from the stored Message data
     time = db_msg['time'] # Get the Time string from the stored Message data
@@ -366,7 +372,7 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
     # Session is a go!
     elif message_attendees >= min_players: # Confirm the Session because the number of players who confirmed attendance is equal to or greater than the minimum required
         await message.channel.send(
-            content = f'{player_active_role.mention} {game_master.mention} \n *SESSION CONFIRMED* -- **{title}** is *CONFIRMED* for **{date}** at **{time}**! {description}', 
+            content = f'{player_active_role.mention} {game_master.mention} \n *SESSION CONFIRMED* -- **{title}** is *CONFIRMED* for **{date}** at **{time}**!', 
             allowed_mentions = discord.AllowedMentions(roles=True)
         )
         status = 'confirmed'
@@ -380,7 +386,7 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
     # Unconfirm the Session
     elif message_attendees == min_players - 1:
         await message.channel.send(
-            content = f'{player_active_role.mention} {game_master_role.mention} \n *SESSION UNCONFIRMED* -- **{title}** has been *UNCONFIRMED*. Only {min_players - attendCount} more player needed to confirm the session!', 
+            content = f'{player_active_role.mention} {game_master_role.mention} \n *SESSION UNCONFIRMED* -- **{title}** has been *UNCONFIRMED*. Only {min_players - message_attendees} more player needed to confirm the session!', 
             allowed_mentions = discord.AllowedMentions(roles=True)
         )
         status = 'pending'
@@ -408,7 +414,7 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
         "min_players": min_players,
         "group_size": group_size
     }
-    db[guild][msg_index] = message_object
+    db[str(guild)][msg_index] = message_object
 # -----------------
 #   Start the Bot
 # -----------------
