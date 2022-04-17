@@ -21,6 +21,7 @@ tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # Add th
 timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezone again, make sure they're the same as the above
 game_master_role_name = "Game Master" # Enter the role name of your GM
 player_role_name = "Player (Active)" # Enter the role name of the players
+bot_name = "Sesh Time" # This must be the same as the name you gave it on the Discord
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # --------------
 #   Initialize
@@ -92,7 +93,7 @@ async def on_ready():
 # Function that runs when a reaction is added
 @bot.event
 async def on_reaction_add(reaction, user):
-    if user.name == "Sesh Time": return # Don't do anything if it's Sesh Time reacting
+    if user.name == bot_name: return # Don't do anything if it's Sesh Time reacting
     message_id = reaction.message.id
     channel_id = reaction.message.channel.id
     guild_id = reaction.message.guild.id
@@ -100,7 +101,7 @@ async def on_reaction_add(reaction, user):
 # Function that runs when a reaction is removed
 @bot.event
 async def on_reaction_remove(reaction, user):
-    if user.name == "Sesh Time": return # Don't do anything if it's Sesh Time reacting
+    if user.name == bot_name: return # Don't do anything if it's Sesh Time reacting
     message_id = reaction.message.id
     channel_id = reaction.message.channel.id
     guild_id = reaction.message.guild.id

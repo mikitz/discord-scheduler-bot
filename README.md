@@ -3,10 +3,10 @@ This is a self-hosted Discord bot that handles scheduling. Built with the intent
 
 ## Definitions
 - MINIMUM NUMBER OF PLAYERS = The minimum number of players required in order to run a session
-- ATTENDING PLAYERS = The users who reacted to the emssage with a ✅
+- ATTENDING PLAYERS = The users who reacted to the message with a ✅
 - ABSENT PLAYERS = The users who reacted to the message with a ❌
 - GROUP SIZE = This is maximum number of players that could attend any given session
-- TIMEZONE = The timezone that you give this to this Session, which is defined on lines 20 and 21 in `main.py` by **YOU**. 
+- TIMEZONE = The timezone that you give to this Session, which is defined on lines 20 and 21 in `main.py` by **YOU**. 
 
 ## Features
 This Discord bot will 
@@ -73,7 +73,7 @@ The `!sb event` takes in 7 variaables that must all be included and separated by
 2. Open it and copy and paste the code from the bot's [keep_alive.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/keep_alive.py)
 3. Hit `Ctrl+S` to save.
 ### Step #4: Modify the Code in `main.py`
-1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 18 - 24):
+1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 18 - 25):
     - **⚠️ I have not tested this with any timezone other than the Chicago and Seoul timezones.**
     - **⚠️ You must change the below 4 variables, else the bot will *NOT* work on your server(s).**
     - You can find your timezone(s) in [timezones.txt](https://github.com/mikitz/discord-scheduler-bot/blob/main/timezones.txt) by searching for a major city near the city you live in.
@@ -85,13 +85,15 @@ The `!sb event` takes in 7 variaables that must all be included and separated by
     timezones = {"CST": "America/Chicago", "KST": "Asia/South Korea"} # Add the timezone again, make sure they're the same as the above
     game_master_role_name = "Game Master" # Enter the role name of your GM
     player_role_name = "Player (Active)" # Enter the role name of the players
+    bot_name = "Sesh TIme" # This must be the same as the name you gave it on the Discord
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     ```
 2. Hit `Ctrl+S` to save.
 ### Step #5: Create a Discord bot on your Discord account
-1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from *00:02:00 to 00:03:02* to do so.  
+1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from *00:02:00 to 00:03:02* to do so. That's only 1 minute and 2 seconds; you got time for that.
+2. Go change line 24 in `main.py` to whatever name you gave it.
 ### Step #6: Copy your Discord Token
-1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=182) from *00:03:02 to 00:03:10* to copy the token.
+1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=182) from *00:03:02 to 00:03:10* to copy the token. That's only 8 seconds; you def got time for that.
 2. Click on the 🔒 icon on the left side of the window to open *Secrets (Environment Variables)* on Replit
 3. Set the `key` as **TOKEN**
 4. Set the `value` as the Discord token you copied in Step 6.1
@@ -99,7 +101,7 @@ The `!sb event` takes in 7 variaables that must all be included and separated by
 ### Step #7: Ensure the Bot stays up forever
 1. Run the bot by clicking ` Run` on Replit.
 2. Copy the URL you see in the upper-right corner, just above the text *Hello, I am alive!*
-3. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=3794) from *01:03:14 to 01:05:20* for the rest.
+3. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=3794) from *01:03:14 to 01:05:20* for the rest. That's only 2 minutes and 6 seconds; please... you got time for that.
 ### Step #8: Run the Bot
 1. Run the bot and forget about it (Unless it goes down for whatever reason)    
-    - Don't worry, the bot can still monitor all the events it needs to, even if it goes offline.
+    - Don't worry, the bot can still monitor all the events it needs to, as long as you bring it back online.
