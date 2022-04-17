@@ -61,4 +61,17 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
 ### Step #3
 #### Setting up `keep_alive.py`
 1. Create a new file called *keep_alive.py*
-2. Open it and copy and paste the code from the bot's [keep_alive.py]()
+2. Open it and copy and paste the code from the bot's [keep_alive.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/keep_alive.py)
+3. Hit `Ctrl+S` to save.
+### Step #4
+#### ⚠️ Modify the Code ⚠️ in `main.py`
+1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them:
+    ```
+    # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+    # Set these to whatever you need
+    tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/South Korea")}
+    timezones = {"CST": "America/Chicago", "KST": "Asia/South Korea"}
+    game_master_role_name = "Game Master"
+    player_role_name = "Player (Active)"
+    # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+    ```
