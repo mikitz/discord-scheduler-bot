@@ -110,7 +110,7 @@ async def on_reaction_remove(reaction, user):
 @bot.command()
 async def help(ctx): #!sb help
     embed = discord.Embed(
-        title='Schedule Bot',
+        title='Sesh Time',
         description='Welcome to the help section of Scheduler Bot. See below for a list of commands and their description.',
         color=discord.Colour.green()
     )
@@ -134,19 +134,19 @@ async def help(ctx): #!sb help
 @bot.command()
 async def info(ctx): # !sb info
     embed = discord.Embed(
-        title='Schedule Bot',
-        description='Schedule Bot Info',
+        title='Sesh Time',
+        description='Sesh Time Info',
         color=discord.Colour.green()
     )
     embed.set_thumbnail(url='https://avatars.githubusercontent.com/u/17684097?s=400&u=badb2a3839ce5cb4e5c3f75dc3172c1f2786412b&v=4')
     embed.add_field(
         name='Ko-fi',
-        value='Buy Mikitz some avocadoes: https://ko-fi.com/mikitz',
+        value="Buy Mikitz some avocadoes because he doesn't drink coffee 😂: https://ko-fi.com/mikitz",
         inline=False
     )
     embed.add_field(
         name='GitHub',
-        value='View the open-source code: https://github.com/mikitz/discord-Sesh Time',
+        value='View the open-source code: https://github.com/mikitz/discord-scheduler-bot',
         inline=False
     )
     await ctx.send(embed=embed)

@@ -58,6 +58,7 @@ The `!sb event` takes in 7 variaables that must all be included and separated by
     - ![Session 12 Image](https://i.imgur.com/ILk21Cf.jpg)
 
 ## How to Run
+If you have any questions while setting it up, just message me on [Reddit](https://www.reddit.com/user/Mikitz) and I'll do my best to help out.
 ### Step #1: Creating a Repl
 1. Go to [replit.com](https://replit.com/~) and create an account or sign in
 2. Create a new Repl by clicking the ➕ in the upper-right corner
