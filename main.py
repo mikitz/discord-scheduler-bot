@@ -76,151 +76,6 @@ async def delete_non_applicable_events():
             print(f"'{guild}' Messages:", db[guild])
         else:
             print(f'Guild "{guild}" has no table.')
-# Function to determine if the event should be cancelled or uncancelled
-async def adjust_event_status_on_reaction_add(reaction, user):
-    reaction_added = reaction.emoji # Get the reaction that was added
-    guild = reaction.message.guild
-    print(f"Getting the Reaction that was added... {reaction_added} (Guild: {guild})")
-    # if reaction_added != '❌' or reaction_added != '✅': return print("Stopping Function...") # Stop the function if it's not a reaction we're monitoring
-    print("Reaction is either a ❌ or a ✅, proceeding...")
-    author = str(reaction.message.author) # Get the author of the message that was reacted to
-    users = await reaction.users().flatten()
-    mentions = ''
-    for i in users: 
-        if i.name == 'Sesh Time': continue
-        mentions += f'{i.mention} '
-    for embed in reaction.message.embeds: message = embed.to_dict() # Convert the Embeds into a dictionary
-    title = message['title'] # Get the Title
-    try: description = message['description'] # Get the Description
-    except: description = '' # Set description to an empty string if not added
-    date = message['fields'][0]['value'] # Get the Date
-    time = message['fields'][1]['value'] # Get the Time 
-    min_players = int(message['fields'][2]['value']) # Get the Min. Players
-    group_size = int(message['fields'][3]['value']) # Get the Group Size
-    game_master = discord.utils.get(reaction.message.guild.roles, name='Game Master') # Grab the Game Master role
-    player_active = discord.utils.get(reaction.message.guild.roles, name='Player (Active)') # Grab the Player (Active) role
-    if 'Sesh Time' in author: # Only do something if the author was the scheduler bot
-        reactions = reaction.message.reactions # Get all the reactions on the message
-        try: attendCount = int(get(reactions, emoji='✅').count) - 1 # Get the number of players who will attend minus the bot
-        except: pass
-        try: absentCount = int(get(reactions, emoji='❌').count) - 1 # Get the number of players who will be absent minus the bot
-        except: pass
-        # Handle Changes
-        if reaction_added == '❌': # Handle Absences
-            if "Game Master" in str(user.roles):
-                await reaction.message.channel.send( # Send a message saying the session is cancelled due to too many players not being able to make it
-                    content = f'{mentions} \n {player_active.mention} {game_master.mention} \n *SESSION CANCELLED* -- **{title}** is *CANCELLED* which was scheduled for **{date}** at **{time}** by the Gamemaster.', 
-                    allowed_mentions = discord.AllowedMentions(roles=True)
-                )
-                update_event_value(reaction.message.channel, reaction.message.id, 'status', 'cancelled')
-                update_event_value(reaction.message.channel, reaction.message.id, 'messaged', True)
-            elif absentCount > group_size - min_players:
-                await reaction.message.channel.send( # Send a message saying the session is cancelled due to too many players not being able to make it
-                    content = f'{mentions} \n {player_active.mention} {game_master.mention} \n *SESSION CANCELLED* -- **{title}** is *CANCELLED* which was scheduled for **{date}** at **{time}** due to too many players not being able to make it.', 
-                    allowed_mentions = discord.AllowedMentions(roles=True)
-                )
-                update_event_value(reaction.message.channel, reaction.message.id, 'status', 'cancelled')
-                update_event_value(reaction.message.channel, reaction.message.id, 'messaged', True)
-        elif reaction_added == '✅': # Handle Attendees
-            if attendCount >= min_players: # Handle 
-                await reaction.message.channel.send(
-                    content = f'{mentions} \n {player_active.mention} {game_master.mention} \n *SESSION CONFIRMED* -- **{title}** is *CONFIRMED* for **{date}** at **{time}**! {description}', 
-                    allowed_mentions = discord.AllowedMentions(roles=True)
-                )
-                update_event_value(reaction.message.channel, reaction.message.id, 'status', 'confirmed')
-                update_event_value(reaction.message.channel, reaction.message.id, 'messaged', True)
-# Function to determine if an event should be confirmed or unconfirmed
-async def adjust_event_status_on_reaction_remove(reaction, user):
-    reaction_removed = reaction.emoji # Get the reaction that was removed
-    guild = reaction.message.guild
-    print(f"Getting the Reaction that was removed... {reaction_removed} (Guild: {guild})")
-    # if reaction_removed != '❌' or reaction_removed != '✅': return print("Stopping Function...") # Stop the function if it's not a reaction we're monitoring
-    print("Reaction is either a ❌ or a ✅, proceeding...")
-    author = str(reaction.message.author) # Get the author of the message that was reacted to
-    users = await reaction.users().flatten()
-    mentions = ''
-    for i in users: 
-        if i.name == 'Sesh Time': continue
-        mentions += f'{i}.mention '
-    for embed in reaction.message.embeds: message = embed.to_dict() # Convert the Embeds into a dictionary
-    title = message['title'] # Get the Title
-    date = message['fields'][0]['value'] # Get the Date
-    time = message['fields'][1]['value'] # Get the Time 
-    min_players = int(message['fields'][2]['value']) # Get the Min. Players
-    group_size = int(message['fields'][3]['value']) # Get the Group Size
-    game_master = discord.utils.get(reaction.message.guild.roles, name='Game Master')
-    player_active = discord.utils.get(reaction.message.guild.roles, name='Player (Active)')
-    if 'Sesh Time' in author: # Only do something if the author was the scheduler bot
-        reactions = reaction.message.reactions # Get all the reactions on the message
-        # See if there's an Attend reaction
-        try: attendCount = int(get(reactions, emoji='✅').count) - 1 # Get the number of players who will attend minus the bot
-        except: pass
-        # See if there's an Absent reaction
-        try: absentCount = int(get(reactions, emoji='❌').count) - 1 # Get the number of players who will be absent minus the bot
-        except: pass
-
-        if reaction_removed == '❌':
-            if absentCount == group_size - min_players + 1:
-                await reaction.message.channel.send( # Send a message saying the session is cancelled due to too many players not being able to make it
-                    content = f'{mentions} \n {player_active.mention} {game_master.mention} \n *SESSION UNCANCELLED* -- **{title}** is has been *UNCANCELLED*. Please reconsider your attendance for **{date}** at **{time}** and react with the appropriate Reaction.', 
-                    allowed_mentions = discord.AllowedMentions(roles=True)
-                )
-                update_event_value(reaction.message.channel, reaction.message.id, 'status', 'pending')
-                update_event_value(reaction.message.channel, reaction.message.id, 'messaged', True)
-        elif reaction_removed == '✅':
-            if attendCount == min_players - 1:
-                await reaction.message.channel.send(
-                    content = f'{mentions} \n {player_active.mention} {game_master.mention} \n *SESSION UNCONFIRMED* -- **{title}** has been *UNCONFIRMED*. Only {min_players - attendCount} more player needed to confirm the session!', 
-                    allowed_mentions = discord.AllowedMentions(roles=True)
-                )
-                update_event_value(reaction.message.channel, reaction.message.id, 'status', 'pending')
-                update_event_value(reaction.message.channel, reaction.message.id, 'messaged', True)
-# Function to update the status of an event
-async def update_event_value(context, message_id, value, string):
-    message = await context.fetch_message(message_id)
-    guild = str(message.guild)
-    msg_index = index_of(db[guild], 'id', message.id)
-    db[guild][msg_index][value] = string
-# Function to update a specific message in the Database
-async def update_message(context, message_id):
-    message = await context.fetch_message(message_id)
-    guild = str(message.guild)
-    msg_index = index_of(db[guild], 'id', message.id)
-    db_msg = db[guild][msg_index]
-    print("update_message ~~ DB Message:", db_msg)
-    reactions = message.reactions
-    attendees = []
-    absentees = []
-    
-    for reaction in reactions: # Loop through all the reactions on this message
-        users = await reaction.users().flatten() # Get a list of users who have reacted with this emoji
-        emoj = reaction.emoji # Get the emoji
-        for user in users: # Loop through the users
-            if emoj == '✅': attendees.append(user.name) # Append user to Attendees list if they have confirmed attendance
-            elif emoj == '❌': absentees.append(user.name) # Apppend user to the Absentees list if they have confirmed absence
-                
-    message_object = {
-        "id": message_id,
-        "channel": {
-            "name": message.channel.name,
-            "id": message.channel.id
-        },
-        "author": {
-            "name": message.author.name,
-            "id": message.author.id
-        },
-        "datetime": db_msg['datetime'],
-        "timezone": db_msg['timezone'],
-        "attendees": attendees,
-        "absentees": absentees,
-        "status": 'pending',
-        "title": db_msg['title'],
-        "date": db_msg['date'],
-        "time": db_msg['time'],
-        "min_players": db_msg['min_players']
-    }
-    db[guild][msg_index] = message_object
-    print("update_message ~~ Updated Message Object:", message_object)
 # ------------------------
 #   Bot Command Fuctions
 # ------------------------
@@ -246,13 +101,17 @@ async def on_resume():
 # Function that runs when a reaction is added
 @bot.event
 async def on_reaction_add(reaction, user):
-    await adjust_event_status_on_reaction_add(reaction, user)
-    await update_message(reaction.message.channel, reaction.message.id)       
+    message_id = reaction.message.id
+    channel_id = reaction.message.channel.id
+    guild_id = reaction.message.guild.id
+    await send_message_based_on_reactions(message_id, channel_id, guild_id)   
 # Function that runs when a reaction is removed
 @bot.event
 async def on_reaction_remove(reaction, user):
-    await adjust_event_status_on_reaction_remove(reaction, user)
-    await update_message(reaction.message.channel, reaction.message.id)
+    message_id = reaction.message.id
+    channel_id = reaction.message.channel.id
+    guild_id = reaction.message.guild.id
+    await send_message_based_on_reactions(message_id, channel_id, guild_id)
 # Function to spit out a help message
 @bot.command()
 async def help(ctx): #!sb help
@@ -304,6 +163,7 @@ async def event(ctx, *args): # !sb event
     args_string = ' '.join(args)
     params = args_string.split(", ")
     guild = str(ctx.message.guild)
+    guild_id = ctx.message.guild.id
     name = params[0]
     date = params[1]
     time = params[2]
@@ -375,7 +235,8 @@ async def event(ctx, *args): # !sb event
         "date": date,
         "time": time,
         "min_players": min_players,
-        "group_size": group_size
+        "group_size": group_size,
+        "guild_id": guild_id
     }
 	# Adding Data
     if guild in db.keys():
@@ -439,36 +300,115 @@ async def monitor_changes():
         if guild in db.keys():
             messages = db[guild]
             for idx, message in enumerate(messages):
-                # Message from the Channel
-                channel = discord.utils.get(dic_guild.channels, name=message['channel']['name'])
-                channel_message = await channel.fetch_message(message['id'])
-                game_master = discord.utils.get(channel.guild.roles, name='Game Master')
-                player_active = discord.utils.get(channel.guild.roles, name='Player (Active)')
-                reactions = await channel_message.reactions
-                mentions = ''
-                attendees = []
-                absentees = []
-                for reaction in reactions: # Loop through all the reactions on this message
-                    users = await reaction.users().flatten() # Get a list of users who have reacted with this emoji
-                    emoj = reaction.emoji # Get the emoji
-                    for user in users: # Loop through the users
-                        if user.name == 'Sesh Time': continue
-                        if emoj == '✅': attendees.append(user.name) # Append user to Attendees list if they have confirmed attendance
-                        elif emoj == '❌': absentees.append(user.name) # Apppend user to the Absentees list if they have confirmed absence
-                        mentions += f'{user.name}.mention '
-                # Message from Database
-                title = message['title'] # Get the Title
-                date = message['date'] # Get the Date
-                time = message['time'] # Get the Time 
-                db_attendees = message['attendees']
-                db_absentees = message['absentees']
-                # Logic
-                if len(db_absentees) != len(absentees):
-                    print('Absentees != Absentees')
-                elif len(db_attendees) != len(attendees):
-                    print('Attendees != Attendees')
-                
+                message_id = message['id']
+                channel_id = message['channel']['id']
+                guild_id = message['guild_id']
+                await send_message_based_on_reactions(message_id, channel_id, guild_id) 
 monitor_changes.start()
+# ===========================================
+#       Rewrite with Minimal Functions
+# ===========================================
+async def send_message_based_on_reactions(message_id, channel_id, guild_id):
+    # Variables
+    guild = await bot.get_guild(guild_id) # Get the Guild object from the Guild ID
+    channel = await guild.get_channel(channel_id) # Get the Channel object from the Guild object
+    message = await channel.fetch_message(message_id) # Get the Message object from the Channel object
+    reactions = message.reactions # Get the Reactions object from the Message object
+    # Pull Message from Database
+    msg_index = index_of(db[guild], 'id', message.id) # Get the Index of this Message by its ID
+    db_msg = db[guild][msg_index] # Pull this Message's data from the Database
+    # Get other data from the Database for this message
+    group_size = db_msg['group_size']
+    min_players = db_msg['min_players']
+    title = db_msg['title'] # Get the Title string from the stored Message data
+    date = db_msg['date'] # Get the Date string from the stored Message data
+    time = db_msg['time'] # Get the Time string from the stored Message data
+    dt = db_msg['datetime'] # Get the DateTime object from the stored Message data
+    timezone = db_msg['timezone'] # Get the Timezone string from the stored Message data
+    # Get stored Reaction counts from the Database
+    db_msg_attendees = len(db_msg['attendees']) - 1 # Get the number of stored Attendees less the Bot
+    db_msg_absentees = len(db_msg['absentees']) - 1 # Get the number of stored Absentees less the Bot
+    # Get the current Reaction counts
+    attendees = [] # Create an empty list to store the users who confirm attendance
+    absentees = [] # Create an empty list to store the users who confirm absence
+    game_master = False # Set up Game Master for looping through the reactions and seeing if the user is a GM
+    for reaction in reactions: # Loop through all the reactions on this message
+        users = await reaction.users().flatten() # Get a list of users who have reacted with this emoji
+        emoj = reaction.emoji # Get the emoji
+        for user in users: # Loop through the users
+            if emoj == '✅': attendees.append(user.name) # Append user to Attendees list if they have confirmed attendance
+            elif emoj == '❌': 
+                absentees.append(user.name) # Apppend user to the Absentees list if they have confirmed absence
+                if "Game Master" in str(user.roles): 
+                    game_master = True
+    message_attendees = len(attendees) - 1 # Get the number of current Attendees less the Bot
+    message_absentees = len(absentees) - 1 # Get the number of current Absentees less the Bot
+    if db_msg_absentees == message_absentees and db_msg_attendees == message_attendees: return # If they are the same, return b/c nothing needs to be done
+    # Get Discord Roles
+    game_master_role = discord.utils.get(guild.roles, name='Game Master')
+    player_active_role = discord.utils.get(guild.roles, name='Player (Active)')
+    # Determine what message to send based on Reaction counts of the message
+    status = 'pending' # Set up Status in case none of the below is met
+    # Cancel Session
+    if game_master: # Cancel the Session b/c the GM has stated they cannot make it
+        await message.channel.send( # Send a message saying the session is cancelled due to too many players not being able to make it
+            content = f'{player_active_role.mention} {game_master_role.mention} \n *SESSION CANCELLED* -- **{title}** is *CANCELLED* which was scheduled for **{date}** at **{time}** by the Gamemaster.', 
+            allowed_mentions = discord.AllowedMentions(roles=True)
+        )
+        status = 'cancelled'
+    # Cancel Session
+    elif message_absentees > group_size - min_players: # Cnacel the session because the number of players who have not reacted is lower than the minimum player requirement
+        await message.channel.send( # Send a message saying the session is cancelled due to too many players not being able to make it
+            content = f'{player_active_role.mention} {game_master_role.mention} \n *SESSION CANCELLED* -- **{title}** is *CANCELLED* which was scheduled for **{date}** at **{time}** due to too many players not being able to make it.', 
+            allowed_mentions = discord.AllowedMentions(roles=True)
+        )
+        status = 'cancelled'
+    # Session is a go!
+    elif message_attendees >= min_players: # Confirm the Session because the number of players who confirmed attendance is equal to or greater than the minimum required
+        await message.channel.send(
+            content = f'{player_active_role.mention} {game_master.mention} \n *SESSION CONFIRMED* -- **{title}** is *CONFIRMED* for **{date}** at **{time}**! {description}', 
+            allowed_mentions = discord.AllowedMentions(roles=True)
+        )
+        status = 'confirmed'
+    # Uncancel the Session
+    elif message_absentees == group_size - min_players + 1:
+        await message.channel.send( # Send a message saying the session is cancelled due to too many players not being able to make it
+            content = f'{player_active_role.mention} {game_master_role.mention} \n *SESSION UNCANCELLED* -- **{title}** is has been *UNCANCELLED*. Please reconsider your attendance for **{date}** at **{time}** and react with the appropriate Reaction.', 
+            allowed_mentions = discord.AllowedMentions(roles=True)
+        )
+        status = 'pending'
+    # Unconfirm the Session
+    elif message_attendees == min_players - 1:
+        await message.channel.send(
+            content = f'{player_active_role.mention} {game_master_role.mention} \n *SESSION UNCONFIRMED* -- **{title}** has been *UNCONFIRMED*. Only {min_players - attendCount} more player needed to confirm the session!', 
+            allowed_mentions = discord.AllowedMentions(roles=True)
+        )
+        status = 'pending'
+    # --------------------------------------------
+    # Finally update the Database for this message
+    # --------------------------------------------
+    message_object = {
+        "id": message_id,
+        "channel": {
+            "name": message.channel.name,
+            "id": message.channel.id
+        },
+        "author": {
+            "name": message.author.name,
+            "id": message.author.id
+        },
+        "datetime": dt,
+        "timezone": timezone,
+        "attendees": attendees,
+        "absentees": absentees,
+        "status": status,
+        "title": title,
+        "date": date,
+        "time": time,
+        "min_players": min_players,
+        "group_size": group_size
+    }
+    db[guild][msg_index] = message_object
 # -----------------
 #   Start the Bot
 # -----------------
