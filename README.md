@@ -89,11 +89,17 @@ The `!sb event` takes in 7 variaables that must all be included and separated by
     ```
 2. Hit `Ctrl+S` to save.
 ### Step #5: Create a Discord bot on your Discord account
-1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from 00:02:00 to 00:03:02 to do so.  
-
+1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from *00:02:00 to 00:03:02* to do so.  
 ### Step #6: Copy your Discord Token
-1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=182) from 00:03:02 to 00:03:10 to copy the token.
-2. Click on the 🔒 icon on the left side of the window to open *Secrets (Environment Variables)* tab on Replit
+1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=182) from *00:03:02 to 00:03:10* to copy the token.
+2. Click on the 🔒 icon on the left side of the window to open *Secrets (Environment Variables)* on Replit
 3. Set the `key` as **TOKEN**
 4. Set the `value` as the Discord token you copied in Step 6.1
 5. Click the `Add new secret` button
+### Step #7: Ensure the Bot stays up forever
+1. Run the bot by clicking ` Run` on Replit.
+2. Copy the URL you see in the upper-right corner, just above the text *Hello, I am alive!*
+3. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=3794) from *01:03:14 to 01:05:20* for the rest.
+### Step #8: Run the Bot
+1. Run the bot and forget about it (Unless it goes down for whatever reason)    
+    - Don't worry, the bot can still monitor all the events it needs to, even if it goes offline.
