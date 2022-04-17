@@ -125,7 +125,7 @@ async def help(ctx): #!sb help
     )
     embed.add_field(
         name='Create a New Event',
-        value='`!sb event` creates a new event using the followwing syntax: `!sb event NAME, DATE, TIME, DESCRIPTION, MINIMUM NUMBER OF PLAYERS`. DESCRIPTION is optional',
+        value='`!sb event` creates a new event using the followwing syntax: `!sb event NAME, DATE, TIME, TIMEZONE, DESCRIPTION, MINIMUM NUMBER OF PLAYERS, GROUP SIZE`. \n *DESCRIPTION is optional*',
         inline=False
     )
     await ctx.send(embed=embed)

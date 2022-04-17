@@ -6,6 +6,7 @@ This is a self-hosted Discord bot that handles scheduling. Built with the intent
 - ATTENDING PLAYERS = The users who reacted to the emssage with a ✅
 - ABSENT PLAYERS = The users who reacted to the message with a ❌
 - GROUP SIZE = This is maximum number of players that could attend any given session
+- TIMEZONE = The timezone that you give this to this Session, which is defined on lines 20 and 21 in `main.py` by **YOU**. 
 
 ## Features
 This Discord bot will 
@@ -13,37 +14,48 @@ This Discord bot will
   2. Automatically unconfirm a session if the `ATTENDING PLAYERS >= MINIMUM NUMBER OF PLAYERS` was true, but becomes false due to a player removing the reaction.
   3. Automatically cancel a session if `ABSENT PLAYERS > GROUP SIZE - MINIMUM NUMBER OF PLAYERS`.
   4. Automatically uncancel a session if `ABSENT PLAYERS = GROUP SIZE - MINIMUM NUMBER OF PLAYERS + 1`.
-
-**IMPORTANT:** This Discord bot does NOT have a calendar built in, nor does it track time. We leave that up to the players and the GM. This means that a player could cancel/uncancel/confirm/unconfirm an old session simply by altering their reactions to those messages.
+  5. Automatically cancels a session if a user with the `game_master_role_name` confirms absence.
+  6. Automatcailly delete sessions that have a date prior to the current date.
+  7. [] Automatically reminds those who have not RSVPed every day to do so until 24 hours before the Session is scheduled to start
 
 ### Create a New Session
+- ⚠️ The only supported date format is `MM-DD-YYYY`.
+- ⚠️ The only supported time format is `4pm` or `4am`. Change the number to whatever.
 ```
-!sb event NAME, DATE, TIME, DESCRIPTION, MINIMUM NUMBER OF PLAYERS, GROUP SIZE
+!sb event NAME, DATE, TIME, TIMEZONE, DESCRIPTION, MINIMUM NUMBER OF PLAYERS, GROUP SIZE
 ```
 The `!sb event` takes in 6 variaables that must all be included and separated by a comma. Each variable is a string, so feel free to put whatever you want in it.
 
 #### Examples
-1. `!sb event Session 54, 2022/3/12, 4pm MST, Will the party escape the evil mage's lair?, 3, 4`
+- ⚠️ The only supported date format is `MM-DD-YYYY`.
+- ⚠️ The only supported time format is `4pm` or `4am`. Change the number to whatever.
+1. `!sb event Session 54, 3-22-2022, 4pm, MST, Will the party escape the evil mage's lair?, 3, 4`
     - NAME = Session 54
-    - DATE = 2022/3/12
-    - TIME = 4pm MST
+    - DATE = 3-22-2022
+    - TIME = 4pm 
+    - TIMEZONE = MST
     - DESCRIPTION = Will the party escape the evil mage's lair?
     - MINIMUM NUMBER OF PLAYERS = 3
     - GROUP SIZE = 4
-2. `!sb event The Orcus Fight (Session 38), 3/28, 1900 CST, Can the party defeat Orcus to save the world? Find out soon!, 2, 6`
+    ![Session 54 Image](https://i.imgur.com/1WNO9MW.jpg)
+2. `!sb event The Orcus Fight (Session 38), 3-22-2022, 7pm, CST, Can the party defeat Orcus to save the world? Find out soon!, 2, 6`
     - NAME = The Orcus Fight (Session 38)
-    - DATE = 3/28
-    - TIME = 1900 CST
+    - DATE = 3-22-2022
+    - TIME = 7pm
+    - TIMEZONE = CST
     - DESCRIPTION = Can the party defeat Orcus to save the world? Find out soon!
     - MINIMUM NUMBER OF PLAYERS = 2
     - GROUP SIZE = 6
-3. `!sb event You Will Die! (Session 12), March 16th, 2pm GMT+1, , 3, 5`
+    ![Session 38 Image](https://i.imgur.com/vfI3kQ1.jpg)
+3. `!sb event You Will Die! (Session 12), 3-22-2022, 2pm, KST, , 3, 5`
     - NAME = You will Die! (Session 12)
-    - DATE = March 16th
-    - TIME = 2pm GMT+1
-    - DESCRIPTION = null
+    - DATE = 3-22-2022
+    - TIME = 2pm 
+    - TIMEZONE = KST
+    - DESCRIPTION = None
     - MINIMUM NUMBER OF PLAYERS = 3 
     - GROUP SIZE = 5
+    ![Session 12 Image](https://i.imgur.com/ILk21Cf.jpg)
 
 ## How to Run
 ### Step #1: Creating a Repl
@@ -64,7 +76,8 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
 1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 18 - 24):
     - **⚠️ I have not tested this with any timezone other than the Chicago and Seoul timezones.**
     - **⚠️ You must change the below 4 variables, else the bot will *NOT* work on your server(s).**
-    - You can find your timezone(s) in [timezones.txt](https://github.com/mikitz/discord-scheduler-bot/blob/main/timezones.txt)
+    - You can find your timezone(s) in [timezones.txt](https://github.com/mikitz/discord-scheduler-bot/blob/main/timezones.txt) by searching for a major city near the city you live in.
+    - "CST" and "KST" are the names of those respective timezones. They could be anything you want, but remember this timezone will be displayed to all users on the server.
     ```
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     # Set these to whatever you need
