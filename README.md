@@ -16,7 +16,7 @@ This Discord bot will
   4. Automatically uncancel a session if `ABSENT PLAYERS = GROUP SIZE - MINIMUM NUMBER OF PLAYERS + 1`.
   5. Automatically cancels a session if a user with the `game_master_role_name` confirms absence.
   6. Automatcailly delete sessions that have a date prior to the current date.
-  7. [] Automatically reminds those who have not RSVPed every day to do so until 24 hours before the Session is scheduled to start
+  7. [ ] Automatically reminds those who have not RSVPed every day to do so until 24 hours before the Session is scheduled to start
 
 ### Create a New Session
 - ⚠️ The only supported date format is `MM-DD-YYYY`.
@@ -37,7 +37,7 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
     - DESCRIPTION = Will the party escape the evil mage's lair?
     - MINIMUM NUMBER OF PLAYERS = 3
     - GROUP SIZE = 4
-    ![Session 54 Image](https://i.imgur.com/1WNO9MW.jpg)
+    - ![Session 54 Image](https://i.imgur.com/1WNO9MW.jpg)
 2. `!sb event The Orcus Fight (Session 38), 3-22-2022, 7pm, CST, Can the party defeat Orcus to save the world? Find out soon!, 2, 6`
     - NAME = The Orcus Fight (Session 38)
     - DATE = 3-22-2022
@@ -46,7 +46,7 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
     - DESCRIPTION = Can the party defeat Orcus to save the world? Find out soon!
     - MINIMUM NUMBER OF PLAYERS = 2
     - GROUP SIZE = 6
-    ![Session 38 Image](https://i.imgur.com/vfI3kQ1.jpg)
+    - ![Session 38 Image](https://i.imgur.com/vfI3kQ1.jpg)
 3. `!sb event You Will Die! (Session 12), 3-22-2022, 2pm, KST, , 3, 5`
     - NAME = You will Die! (Session 12)
     - DATE = 3-22-2022
@@ -55,7 +55,7 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
     - DESCRIPTION = None
     - MINIMUM NUMBER OF PLAYERS = 3 
     - GROUP SIZE = 5
-    ![Session 12 Image](https://i.imgur.com/ILk21Cf.jpg)
+    - ![Session 12 Image](https://i.imgur.com/ILk21Cf.jpg)
 
 ## How to Run
 ### Step #1: Creating a Repl
