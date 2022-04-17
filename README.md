@@ -64,7 +64,7 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
 1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 18 - 24):
     - **⚠️ I have not tested this with any timezone other than the Chicago and Seoul timezones.**
     - **⚠️ You must change the below 4 variables, else the bot will *NOT* work on your server(s).**
-    - You can find an applicable timezone in [timezones.txt]()
+    - You can find your timezone(s) in [timezones.txt](https://github.com/mikitz/discord-scheduler-bot/blob/main/timezones.txt)
     ```
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     # Set these to whatever you need
