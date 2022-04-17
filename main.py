@@ -17,11 +17,12 @@ from dateutil.tz import gettz
 import pytz
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # Set these to whatever you need
-tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # Add the timezones you'll be using
-timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezone again, make sure they're the same as the above
+tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul"), "MST":gettz("America/Denver")} # Add the timezones you'll be using
+timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul", "MST": "America/Denver"} # Add the timezone again, make sure they're the same as the above
 game_master_role_name = "Game Master" # Enter the role name of your GM
 player_role_name = "Player (Active)" # Enter the role name of the players
 bot_name = "Sesh Time" # This must be the same as the name you gave it on Discord
+looping_interval = 60 # Frequency of checking messages for changes, updating, and deletion in minutes
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # --------------
 #   Initialize
@@ -64,6 +65,7 @@ async def delete_non_applicable_events():
                 datetime_object = parse(dt, tzinfos=tzinfos)
                 new_time = datetime_object + datetime.timedelta(days=1) # Add 6 days to the event time
                 tz = element['timezone']
+                print("Timezone:", tz)
                 local_time = datetime.datetime.now(pytz.timezone(timezones.get(tz))) # Get local time and convert it to the timezone of the event
                 if local_time >= new_time:
                     print(f"Deleting Message at index {idx}...")
@@ -84,7 +86,7 @@ async def delete_non_applicable_events():
 @bot.event
 async def on_ready():
     print("-------------------------")
-    print("Scheduler Bot is running.")
+    print(f"{bot_name} is running.")
     print("-------------------------")
     # print("Keys:", db.keys())
     # for key in db.keys():
@@ -252,7 +254,7 @@ async def event(ctx, *args): # !sb event
 #   Looped Functions
 # --------------------
 # Function to auto cancel sessions that don't have enough player reserved
-@tasks.loop(minutes=5)
+@tasks.loop(minutes=looping_interval)
 async def auto_cancel_event():
     await delete_non_applicable_events()
     print("------------------")

@@ -74,7 +74,7 @@ If you have any questions while setting it up, just message me on [Reddit](https
 2. Open it and copy and paste the code from the bot's [keep_alive.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/keep_alive.py)
 3. Hit `Ctrl+S` to save.
 ### Step #4: Modify the Code in `main.py`
-1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 18 - 25):
+1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 18 - 26):
     - **⚠️ I have not tested this with any timezone other than the Chicago and Seoul timezones.**
     - **⚠️ You must change the below 4 variables, else the bot will *NOT* work on your server(s).**
     - You can find your timezone(s) in [timezones.txt](https://github.com/mikitz/discord-scheduler-bot/blob/main/timezones.txt) by searching for a major city near the city you live in.
@@ -87,6 +87,7 @@ If you have any questions while setting it up, just message me on [Reddit](https
     game_master_role_name = "Game Master" # Enter the role name of your GM
     player_role_name = "Player (Active)" # Enter the role name of the players
     bot_name = "Sesh TIme" # This must be the same as the name you gave it on Discord
+    looping_interval = 60 # Frequency of checking messages for changes, updating, and deletion in minutes
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     ```
 2. Hit `Ctrl+S` to save.
