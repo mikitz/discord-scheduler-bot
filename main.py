@@ -86,12 +86,17 @@ async def delete_non_applicable_events():
 @bot.event
 async def on_ready():
     print("-------------------------")
-    print(f"{bot_name} is running.")
+    print(f"{bot_name} is running with the the below...")
     print("-------------------------")
     # print("Keys:", db.keys())
     # for key in db.keys():
     #     print(f'Deleting Key for Server "{key}"')
     #     del db[key]
+    print("Bot Name:", bot_name)
+    print("Timezones:", timezones)
+    print("Game Master Role Name:", game_master_role_name)
+    print("Player Role Name:", player_role_name)
+    print("Looping Interval:", looping_interval, "minutes")
 # Function that runs when a reaction is added
 @bot.event
 async def on_reaction_add(reaction, user):
