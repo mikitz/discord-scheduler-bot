@@ -51,18 +51,20 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
 2. Create a new Repl by clicking the ➕ in the upper-right corner
 3. Select Python as the Language
 4. Give it whatever title you want
-5. Hi the *+ Create Repl* button
+5. Hi the `+ Create Repl` button
 ### Step #2: Setting up `main.py`
-1. You'll see 1 file called `main.py`
+1. You'll see a file called `main.py`
 2. Open it and copy and paste the code from the bot's [main.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/main.py)
 3. Hit `Ctrl+S` to save.
 ### Step #3: Setting up `keep_alive.py`
-1. Create a new file called *keep_alive.py*
+1. Create a new file called `keep_alive.py`
 2. Open it and copy and paste the code from the bot's [keep_alive.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/keep_alive.py)
 3. Hit `Ctrl+S` to save.
 ### Step #4: Modify the Code in `main.py`
-1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them:
-    - **Note that I have not tested this with any timezone other than the Chicago and Seoul timezones.**
+1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 18 - 24):
+    - **⚠️ I have not tested this with any timezone other than the Chicago and Seoul timezones.**
+    - **⚠️ You must change the below 4 variables, else the bot will *NOT* work on your server(s).**
+    - You can find an applicable timezone in [timezones.txt]()
     ```
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     # Set these to whatever you need
@@ -72,4 +74,4 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
     player_role_name = "Player (Active)" # Enter the role name of the players
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     ```
-2. **IMPORTANT:** You must change the above 4 variables, else the bot will *NOT* work on your server.
+2. 
