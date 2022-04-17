@@ -24,7 +24,7 @@ This Discord bot will
 ```
 !sb event NAME, DATE, TIME, TIMEZONE, DESCRIPTION, MINIMUM NUMBER OF PLAYERS, GROUP SIZE
 ```
-The `!sb event` takes in 6 variaables that must all be included and separated by a comma. Each variable is a string, so feel free to put whatever you want in it.
+The `!sb event` takes in 7 variaables that must all be included and separated by a comma. Each variable is a string, so feel free to put whatever you want in it **EXCEPT for commas**.
 
 #### Examples
 - ⚠️ The only supported date format is `MM-DD-YYYY`.
@@ -87,4 +87,13 @@ The `!sb event` takes in 6 variaables that must all be included and separated by
     player_role_name = "Player (Active)" # Enter the role name of the players
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     ```
-2. 
+2. Hit `Ctrl+S` to save.
+### Step #5: Create a Discord bot on your Discord account
+1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from 00:02:00 to 00:03:02 to do so.  
+
+### Step #6: Copy your Discord Token
+1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=182) from 00:03:02 to 00:03:10 to copy the token.
+2. Click on the 🔒 icon on the left side of the window to open *Secrets (Environment Variables)* tab on Replit
+3. Set the `key` as **TOKEN**
+4. Set the `value` as the Discord token you copied in Step 6.1
+5. Click the `Add new secret` button
