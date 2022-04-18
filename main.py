@@ -332,7 +332,7 @@ async def remind_non_RSVPed_players():
             print(f"*** Inspecting messages for Server {guild}... ***")
             messages = db[guild]
             for idx, message in enumerate(messages):
-                channel = discord.utils.get(dic_guild.channels, name=message['channel']['name']) # Get the channel where the message is
+                channel = discord.utils.get(guild.channels, name=message['channel']['name']) # Get the channel where the message is
                 msg = await channel.fetch_message(message['id']) # Get the message
                 reactions = msg.reactions
                 dt = message['datetime']
