@@ -104,7 +104,7 @@ If you have any questions while setting it up, just message me on [Reddit](https
 1. Run the bot by clicking ` Run` on Replit.
 2. Copy the URL you see in the upper-right corner, just above the text *Hello, I am alive!*
 3. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=3794) from *01:03:14 to 01:05:20* for the rest.
-### Step #8: Ensure the bot auto restarts
+### Step #8: Setting up `restart.py`
 1. Create a new file called `restart.py`
 2. Open it and copy and paste the code from the bot's [restart.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/restart.py)
 3. Hit `Ctrl+S` to save.
