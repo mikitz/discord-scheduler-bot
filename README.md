@@ -73,7 +73,11 @@ If you have any questions while setting it up, just message me on [Reddit](https
 1. Create a new file called `keep_alive.py`
 2. Open it and copy and paste the code from the bot's [keep_alive.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/keep_alive.py)
 3. Hit `Ctrl+S` to save.
-### Step #4: Modify the Code in `main.py`
+### Step #4: Setting up `restart.py`
+1. Create a new file called `restart.py`
+2. Open it and copy and paste the code from the bot's [restart.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/restart.py)
+3. Hit `Ctrl+S` to save.
+### Step #5: Modify the Code in `main.py`
 1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 18 - 26):
     - **⚠️ I have not tested this with any timezone other than the Chicago and Seoul timezones.**
     - **⚠️ You must change the below 4 variables, else the bot will *NOT* work on your server(s).**
@@ -91,23 +95,19 @@ If you have any questions while setting it up, just message me on [Reddit](https
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     ```
 2. Hit `Ctrl+S` to save.
-### Step #5: Create a Discord bot on your Discord account
+### Step #6: Create a Discord bot on your Discord account
 1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from *00:02:00 to 00:03:02* to do so.
 2. Go change line 24 in `main.py` to whatever name you gave it.
-### Step #6: Copy your Discord Token
+### Step #7: Copy your Discord Token
 1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=182) from *00:03:02 to 00:03:10* to copy the token.
 2. Click on the 🔒 icon on the left side of the window to open *Secrets (Environment Variables)* on Replit
 3. Set the `key` as **TOKEN**
 4. Set the `value` as the Discord token you copied in Step 6.1
 5. Click the `Add new secret` button
-### Step #7: Ensure the Bot stays up forever
+### Step #8: Ensure the Bot stays up forever
 1. Run the bot by clicking ` Run` on Replit.
 2. Copy the URL you see in the upper-right corner, just above the text *Hello, I am alive!*
 3. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=3794) from *01:03:14 to 01:05:20* for the rest.
-### Step #8: Setting up `restart.py`
-1. Create a new file called `restart.py`
-2. Open it and copy and paste the code from the bot's [restart.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/restart.py)
-3. Hit `Ctrl+S` to save.
 ### Step #9: Run the Bot
 1. Run the bot and forget about it (Unless it goes down for whatever reason)    
     - Don't worry, the bot can still monitor all the events it needs to, as long as you bring it back online.
