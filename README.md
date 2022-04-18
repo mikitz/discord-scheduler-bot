@@ -16,7 +16,7 @@ This Discord bot will
   4. Automatically uncancel a session if `ABSENT PLAYERS = GROUP SIZE - MINIMUM NUMBER OF PLAYERS + 1`.
   5. Automatically cancels a session if a user with the `game_master_role_name` confirms absence.
   6. Automatcailly delete sessions that have a date prior to the current date.
-  7. [ ] Automatically reminds those who have not RSVPed every day to do so until 24 hours before the Session is scheduled to start
+  7. Automatically reminds those who have not RSVPed every day to do so until 24 hours before the Session is scheduled to start
 
 ### Create a New Session
 - ⚠️ The only supported date format is `MM-DD-YYYY`.

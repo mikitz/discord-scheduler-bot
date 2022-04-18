@@ -320,6 +320,49 @@ async def auto_cancel_event():
         else:
             print(f"No messages found for Server {guild}")
 auto_cancel_event.start()
+@tasks.loop(hours=24)
+async def remind_non_RSVPed_players():
+    for gld in bot.guilds: # Loop through each guild
+        guild = bot.get_guild(gld.id) # Get the Guild object from the Guild ID
+        player_active_role = discord.utils.get(guild.roles, name=player_role_name) # Get the Users who are players
+        players = player_active_role.members
+        non_RSVPed_players = []
+        guild_name = str(guild.name)
+        if guild_name in db.keys():
+            print(f"*** Inspecting messages for Server {guild}... ***")
+            messages = db[guild]
+            for idx, message in enumerate(messages):
+                channel = discord.utils.get(dic_guild.channels, name=message['channel']['name']) # Get the channel where the message is
+                msg = await channel.fetch_message(message['id']) # Get the message
+                reactions = msg.reactions
+                dt = message['datetime']
+                datetime_object = parse(dt, tzinfos=tzinfos) 
+                tz = message['timezone']
+                local_time = datetime.datetime.now(pytz.timezone(timezones.get(tz))) # Get local time and convert it to the timezone of the event
+                for reaction in reactions:
+                    users = await reaction.users().flatten()
+                    emoj = reaction.emoji
+                    for user in users:
+                        if user in players and user not in non_RSVPed_players: # Only the remind the member if they are a player and not already going to be reminded
+                            if local_time <= datetime_object - datetime.timedelta(hours=24): # Only remind the player if the sessioni is more than 24 hours away
+                                non_RSVPed_players.append({
+                                    "user_id": user.id, 
+                                    "message_id": message['id'], 
+                                    "channel_id": message['channel']['id'], 
+                                    "guild_id": message['guild_id'],
+                                    "title": message['title'],
+                                    "time": message['time'],
+                                    "timzone": message['timezone'],
+                                    "date": message['date']
+                                })
+    for player in non_RSVPed_players:
+        user = await bot.fetch_user(player['user_id'])
+        guild = bot.get_guild(player['guild_id']) # Get the Guild object from the Guild ID
+        channel = guild.get_channel(player['channel_id']) # Get the Channel object from the Guild object
+        message = await channel.fetch_message(player['message_id']) # Get the Message object from the Channel object
+        link = message.jump_url # Grab the URL that allows the user to jump to the specified message
+        await user.send(f"This is a friendly reminder that you have yet to RSVP for {message['title']} scheduled for {message['date']} at {message['time']} {message['timezone']}, which can be found here: {link}")
+remind_non_RSVPed_players.start()
 # ===========================================
 #       Rewrite with Minimal Functions
 # ===========================================
