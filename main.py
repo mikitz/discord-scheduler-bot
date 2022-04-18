@@ -2,6 +2,7 @@
 #   Imports
 # -----------
 from cmath import nan
+from distutils.log import error
 from unicodedata import name
 import os
 import logging
@@ -355,13 +356,14 @@ async def remind_non_RSVPed_players():
                                     "timzone": message['timezone'],
                                     "date": message['date']
                                 })
-    for player in non_RSVPed_players:
-        user = await bot.fetch_user(player['user_id'])
-        guild = bot.get_guild(player['guild_id']) # Get the Guild object from the Guild ID
-        channel = guild.get_channel(player['channel_id']) # Get the Channel object from the Guild object
-        message = await channel.fetch_message(player['message_id']) # Get the Message object from the Channel object
-        link = message.jump_url # Grab the URL that allows the user to jump to the specified message
-        await user.send(f"This is a friendly reminder that you have yet to RSVP for {message['title']} scheduled for {message['date']} at {message['time']} {message['timezone']}, which can be found here: {link}")
+        if len(non_RSVPed_players) > 0:
+            for player in non_RSVPed_players:
+                user = await bot.fetch_user(player['user_id'])
+                guild = bot.get_guild(player['guild_id']) # Get the Guild object from the Guild ID
+                channel = guild.get_channel(player['channel_id']) # Get the Channel object from the Guild object
+                message = await channel.fetch_message(player['message_id']) # Get the Message object from the Channel object
+                link = message.jump_url # Grab the URL that allows the user to jump to the specified message
+                await user.send(f"This is a friendly reminder that you have yet to RSVP for {message['title']} scheduled for {message['date']} at {message['time']} {message['timezone']}, which can be found here: {link}")
 remind_non_RSVPed_players.start()
 # ===========================================
 #       Rewrite with Minimal Functions
@@ -471,5 +473,11 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
 # -----------------
 #   Start the Bot
 # -----------------
-keep_alive() # Start the HTTP server to that it runs 24/7
-bot.run(os.getenv("TOKEN")) # Start the bot
+try:
+    keep_alive() # Start the HTTP server to that it runs 24/7
+    bot.run(os.getenv("TOKEN")) # Start the bot
+except discord.errors.HTTPException:
+    print(discord.errors.HTTPException)
+    print("\n\n\nBLOCKED BY RATE LIMITS\nRESTARTING NOW\n\n\n")
+    os.system("python restart.py")
+    os.system("kill 1")
