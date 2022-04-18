@@ -82,8 +82,8 @@ If you have any questions while setting it up, just message me on [Reddit](https
     ```
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     # Set these to whatever you need
-    tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/South Korea")} # Add the timezones you'll be using
-    timezones = {"CST": "America/Chicago", "KST": "Asia/South Korea"} # Add the timezone again, make sure they're the same as the above
+    tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # Add the timezones you'll be using
+    timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezone again, make sure they're the same as the above
     game_master_role_name = "Game Master" # Enter the role name of your GM
     player_role_name = "Player (Active)" # Enter the role name of the players
     bot_name = "Sesh TIme" # This must be the same as the name you gave it on Discord
