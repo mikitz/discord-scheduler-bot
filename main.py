@@ -23,7 +23,7 @@ timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul", "MST": "America/Denv
 game_master_role_name = "Game Master" # Enter the role name of your GM
 player_role_name = "Player (Active)" # Enter the role name of the players
 bot_name = "Sesh Time" # This must be the same as the name you gave it on Discord
-looping_interval = 60 # Frequency of checking messages for changes, updating, and deletion in minutes
+looping_interval = 5 # Frequency of checking messages for changes, updating, and deletion in minutes
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # --------------
 #   Initialize
@@ -476,8 +476,11 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
 try:
     keep_alive() # Start the HTTP server to that it runs 24/7
     bot.run(os.getenv("TOKEN")) # Start the bot
-except discord.errors.HTTPException:
-    print(discord.errors.HTTPException)
+except discord.HTTPException as e:
+    # print("Response:", e.response)
+    # print("Message:", e.text)
+    # print("Status:", e.status)
+    # print("Code:", e.code)
     print("\n\n\nBLOCKED BY RATE LIMITS\nRESTARTING NOW\n\n\n")
     os.system("python restart.py")
     os.system("kill 1")
