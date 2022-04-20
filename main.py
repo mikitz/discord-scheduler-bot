@@ -24,7 +24,7 @@ game_master_role_name = "Game Master" # Enter the role name of your GM
 player_role_name = "Player (Active)" # Enter the role name of the players
 bot_name = "Sesh Time" # This must be the same as the name you gave it on Discord
 looping_interval = 60 # Frequency of checking messages for changes, updating, and deletion in minutes
-reminders_channel_name = "reminders" # The name of the channel where 
+reminders_channel_name = "reminders" # The name of the channel where the reminders will be sent
 RSVP_deadline = 24 # The number of hours before a session when RSVPs are due, otherwise the session will be cancelled.
 remind_interval = 24 # How frequently the bot will remind players who have not RSVPed yet
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
