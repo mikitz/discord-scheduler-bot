@@ -534,6 +534,6 @@ except discord.HTTPException as e:
     print("Message:", e.text)
     print("Status:", e.status)
     print("Code:", e.code)
-    print("\n\n\n BLOCKED BY RATE LIMITS \n RESTARTING IN 60 SECONDS \n\n\n")
+    print("\n\n\n BLOCKED BY HTTP EXCEPTION \n RESTARTING IN 60 SECONDS \n\n\n")
     os.system("python restart.py")
     os.system("kill 1")
