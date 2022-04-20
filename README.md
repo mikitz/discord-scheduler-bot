@@ -78,7 +78,7 @@ If you have any questions while setting it up, just message me on [Reddit](https
 2. Open it and copy and paste the code from the bot's [restart.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/restart.py)
 3. Hit `Ctrl+S` to save.
 ### Step #5: Modify the Code in `main.py`
-1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 18 - 26):
+1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 19 - 30):
     - **⚠️ I have not tested this with any timezone other than the Chicago and Seoul timezones.**
     - **⚠️ You must change the below 4 variables, else the bot will *NOT* work on your server(s).**
     - You can find your timezone(s) in [timezones.txt](https://github.com/mikitz/discord-scheduler-bot/blob/main/timezones.txt) by searching for a major city near the city you live in.
@@ -90,8 +90,11 @@ If you have any questions while setting it up, just message me on [Reddit](https
     timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezone again, make sure they're the same as the above
     game_master_role_name = "Game Master" # Enter the role name of your GM
     player_role_name = "Player (Active)" # Enter the role name of the players
-    bot_name = "Sesh TIme" # This must be the same as the name you gave it on Discord
-    looping_interval = 60 # Frequency of checking messages for changes, updating, and deletion in minutes
+    bot_name = "Sesh Time" # This must be the same as the name you gave it on Discord
+    looping_interval = 60 # Frequency of checking messages for changes, updating, deletion, and reminding players to RSVP in minutes
+    reminders_channel_name = "reminders" # The name of the channel where 
+    RSVP_deadline = 24 # The number of hours before a session when RSVPs are due, otherwise the session will be cancelled.
+    remind_interval = 24 # How frequently the bot will remind players who have not RSVPed yet
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     ```
 2. Hit `Ctrl+S` to save.

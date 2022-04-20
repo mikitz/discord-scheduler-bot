@@ -18,12 +18,15 @@ from dateutil.tz import gettz
 import pytz
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # Set these to whatever you need
-tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul"), "MST":gettz("America/Denver")} # Add the timezones you'll be using
-timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul", "MST": "America/Denver"} # Add the timezone again, make sure they're the same as the above
+tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # Add the timezones you'll be using
+timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezone again, make sure they're the same as the above
 game_master_role_name = "Game Master" # Enter the role name of your GM
 player_role_name = "Player (Active)" # Enter the role name of the players
 bot_name = "Sesh Time" # This must be the same as the name you gave it on Discord
-looping_interval = 5 # Frequency of checking messages for changes, updating, and deletion in minutes
+looping_interval = 60 # Frequency of checking messages for changes, updating, and deletion in minutes
+reminders_channel_name = "reminders" # The name of the channel where 
+RSVP_deadline = 24 # The number of hours before a session when RSVPs are due, otherwise the session will be cancelled.
+remind_interval = 24 # How frequently the bot will remind players who have not RSVPed yet
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # --------------
 #   Initialize
@@ -86,10 +89,10 @@ async def delete_non_applicable_events():
 # On start up
 @bot.event
 async def on_ready():
-    print("-------------------------")
+    print("----------------------------------------------------")
     print(f"{bot_name} is running with the the below...")
-    print("-------------------------")
-    # print("Keys:", db.keys())
+    print("----------------------------------------------------")
+    # print("Keys:", db.keys()) # Uncomment this to delete all data from the Database
     # for key in db.keys():
     #     print(f'Deleting Key for Server "{key}"')
     #     del db[key]
@@ -97,7 +100,8 @@ async def on_ready():
     print("Timezones:", timezones)
     print("Game Master Role Name:", game_master_role_name)
     print("Player Role Name:", player_role_name)
-    print("Looping Interval:", looping_interval, "minutes")
+    print("Looping Interval:", looping_interval, "minute(s)")
+    print("Reminders Channel:", reminders_channel_name)
 # Function that runs when a reaction is added
 @bot.event
 async def on_reaction_add(reaction, user):
@@ -162,7 +166,9 @@ async def info(ctx): # !sb info
 # Function to create a new event
 @bot.command()
 async def event(ctx, *args): # !sb event
-    print("$$$ New Event Added! $$$")
+    print("------------------")
+    print("New Event Added...")
+    print("------------------")
     args_string = ' '.join(args)
     params = args_string.split(", ")
     guild = str(ctx.message.guild)
@@ -275,7 +281,12 @@ async def auto_cancel_event():
             messages = db[guild]
             for idx, message in enumerate(messages):
                 channel = discord.utils.get(dic_guild.channels, name=message['channel']['name'])
-                channel_message = await channel.fetch_message(message['id'])
+                try: 
+                    channel_message = await channel.fetch_message(message['id'])
+                except discord.HTTPException as e:
+                    print("Message ID:", message['id'])
+                    print("Error:", e.text)
+                    continue # Go to the next message
                 title = message['title']
                 date = message['date']
                 time = message['time']
@@ -283,7 +294,7 @@ async def auto_cancel_event():
                 datetime_object = parse(dt, tzinfos=tzinfos) 
                 tz = message['timezone']
                 local_time = datetime.datetime.now(pytz.timezone(timezones.get(tz))) # Get local time and convert it to the timezone of the event
-                if datetime_object - datetime.timedelta(hours=24) <= local_time:
+                if datetime_object - datetime.timedelta(hours=RSVP_deadline) <= local_time:
                     if len(message['attendees']) <= int(message['min_players']):
                         game_master = discord.utils.get(channel.guild.roles, name=game_master_role_name)
                         player_active = discord.utils.get(channel.guild.roles, name=player_role_name)
@@ -321,33 +332,61 @@ async def auto_cancel_event():
         else:
             print(f"No messages found for Server {guild}")
 auto_cancel_event.start()
-@tasks.loop(hours=24)
+@tasks.loop(minutes=remind_interval)
 async def remind_non_RSVPed_players():
+    print("--------------------")
+    print("Reminding Players...")
+    print("--------------------")
     for gld in bot.guilds: # Loop through each guild
         guild = bot.get_guild(gld.id) # Get the Guild object from the Guild ID
         player_active_role = discord.utils.get(guild.roles, name=player_role_name) # Get the Users who are players
         players = player_active_role.members
-        non_RSVPed_players = []
         guild_name = str(guild.name)
         if guild_name in db.keys():
-            print(f"*** Inspecting messages for Server {guild}... ***")
-            messages = db[guild]
+            print(f"*** Inspecting messages for Reminding for Server {guild}... ***")
+            messages = db[guild_name]
             for idx, message in enumerate(messages):
+                non_RSVPed_players = []
                 channel = discord.utils.get(guild.channels, name=message['channel']['name']) # Get the channel where the message is
-                msg = await channel.fetch_message(message['id']) # Get the message
+                try:    
+                    msg = await channel.fetch_message(message['id']) # Get the message
+                except discord.HTTPException as e:
+                    print("~~~ERROR~~~")
+                    print("Message ID:", message['id'])
+                    print("Error:", e.text)
+                    continue # Go to the next message
                 reactions = msg.reactions
                 dt = message['datetime']
                 datetime_object = parse(dt, tzinfos=tzinfos) 
                 tz = message['timezone']
                 local_time = datetime.datetime.now(pytz.timezone(timezones.get(tz))) # Get local time and convert it to the timezone of the event
-                for reaction in reactions:
-                    users = await reaction.users().flatten()
-                    emoj = reaction.emoji
-                    for user in users:
-                        if user in players and user not in non_RSVPed_players: # Only the remind the member if they are a player and not already going to be reminded
-                            if local_time <= datetime_object - datetime.timedelta(hours=24): # Only remind the player if the sessioni is more than 24 hours away
+                for player in players:
+                    player_name = player.name
+                    for reactions in reactions:
+                        users = await reactions.users().flatten()
+                        print("Non-RSVPed Players (BEFORE):", non_RSVPed_players)
+                        if player_name in str(non_RSVPed_players): continue # Skip this player b/c they'are already going to be reminded for this Session
+                        if len(users) <= 1 and local_time <= datetime_object - datetime.timedelta(hours=RSVP_deadline):
+                            non_RSVPed_players.append({ # Add the player to the to-be reminded list
+                                "user_id": player.id,
+                                "user_name": player_name,
+                                "message_id": message['id'], 
+                                "channel_id": message['channel']['id'], 
+                                "guild_id": message['guild_id'],
+                                "title": message['title'],
+                                "time": message['time'],
+                                "timzone": message['timezone'],
+                                "date": message['date']
+                            })
+                            continue # Skip to the next user
+                        for user in users:
+                            user_name = user.name
+                            if user_name == bot_name: continue # Skip the bot
+                            if user_name == player_name or user_name in non_RSVPed_players: continue # Skip b/c this player has already reacted
+                            if local_time <= datetime_object - datetime.timedelta(hours=RSVP_deadline): # Only remind the player if the sessioni is more than 24 hours away
                                 non_RSVPed_players.append({
-                                    "user_id": user.id, 
+                                    "user_id": player.id,
+                                    "user_name": player_name,
                                     "message_id": message['id'], 
                                     "channel_id": message['channel']['id'], 
                                     "guild_id": message['guild_id'],
@@ -356,14 +395,24 @@ async def remind_non_RSVPed_players():
                                     "timzone": message['timezone'],
                                     "date": message['date']
                                 })
-        if len(non_RSVPed_players) > 0:
-            for player in non_RSVPed_players:
-                user = await bot.fetch_user(player['user_id'])
-                guild = bot.get_guild(player['guild_id']) # Get the Guild object from the Guild ID
-                channel = guild.get_channel(player['channel_id']) # Get the Channel object from the Guild object
-                message = await channel.fetch_message(player['message_id']) # Get the Message object from the Channel object
-                link = message.jump_url # Grab the URL that allows the user to jump to the specified message
-                await user.send(f"This is a friendly reminder that you have yet to RSVP for {message['title']} scheduled for {message['date']} at {message['time']} {message['timezone']}, which can be found here: {link}")
+                if len(non_RSVPed_players) > 0:
+                    print("Non-RSVPed Players (AFTER):", non_RSVPed_players)
+                    mentions = ''
+                    for player in non_RSVPed_players:
+                        user = await bot.fetch_user(player['user_id'])
+                        mentions += f"{user.mention} "
+                    guild = bot.get_guild(message['guild_id']) # Get the Guild object from the Guild ID
+                    channel = guild.get_channel(message['channel']['id']) # Get the Channel object from the Guild object
+                    message = await channel.fetch_message(message['id']) # Get the Message object from the Channel object
+                    link = message.jump_url # Grab the URL that allows the user to jump to the specified message
+                    # Pull Message from Database
+                    msg_index = index_of(db[str(guild)], 'id', message.id) # Get the Index of this Message by its ID
+                    db_msg = db[str(guild)][msg_index] # Pull this Message's data from the Database
+                    # Remind the User
+                    channel = discord.utils.get(guild.channels, name=reminders_channel_name)
+                    await channel.send(f"{mentions}, this is a friendly reminder that you have yet to RSVP for **{db_msg['title']}** scheduled for **{db_msg['date']}** at **{db_msg['time']} {db_msg['timezone']}**, which can be found here: {link}")
+        else:
+            print(f"------No Reminders sent for Server {guild}")
 remind_non_RSVPed_players.start()
 # ===========================================
 #       Rewrite with Minimal Functions
@@ -372,7 +421,12 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
     # Variables
     guild = bot.get_guild(guild_id) # Get the Guild object from the Guild ID
     channel = guild.get_channel(channel_id) # Get the Channel object from the Guild object
-    message = await channel.fetch_message(message_id) # Get the Message object from the Channel object
+    try:
+        message = await channel.fetch_message(message_id) # Get the Message object from the Channel object
+    except Exception as e:
+        print("~~~ERROR~~~")
+        print("Error:", e)
+        return # End the function b/c the channel doesn't exist
     reactions = message.reactions # Get the Reactions object from the Message object
     # Pull Message from Database
     msg_index = index_of(db[str(guild)], 'id', message.id) # Get the Index of this Message by its ID
@@ -474,13 +528,12 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
 #   Start the Bot
 # -----------------
 try:
-    keep_alive() # Start the HTTP server to that it runs 24/7
+    keep_alive() # Start the HTTP server so that it runs 24/7
     bot.run(os.getenv("TOKEN")) # Start the bot
 except discord.HTTPException as e:
-    # print("Response:", e.response)
-    # print("Message:", e.text)
-    # print("Status:", e.status)
-    # print("Code:", e.code)
-    print("\n\n\nBLOCKED BY RATE LIMITS\nRESTARTING NOW\n\n\n")
+    print("Message:", e.text)
+    print("Status:", e.status)
+    print("Code:", e.code)
+    print("\n\n\n BLOCKED BY RATE LIMITS \n RESTARTING IN 60 SECONDS \n\n\n")
     os.system("python restart.py")
     os.system("kill 1")
