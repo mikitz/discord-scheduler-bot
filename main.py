@@ -18,15 +18,15 @@ from dateutil.tz import gettz
 import pytz
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # Set these to whatever you need
-tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # Add the timezones you'll be using
-timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezone again, make sure they're the same as the above
-game_master_role_name = "Game Master" # Enter the role name of your GM
-player_role_name = "Player (Active)" # Enter the role name of the players
-bot_name = "Sesh Time" # This must be the same as the name you gave it on Discord
-looping_interval = 60 # Frequency of checking messages for changes, updating, and deletion in minutes
-reminders_channel_name = "reminders" # The name of the channel where the reminders will be sent
+tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # ❗ Add the timezones you'll be using.
+timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # ❗ Add the timezones again; make sure they're the same as the above.
+game_master_role_name = "Game Master" # ❗ Enter the role name of your GM.
+player_role_name = "Player (Active)" # ❗ Enter the role name of the players.
+bot_name = "Sesh Time" # ❗ This must be the same as the name you gave it on the Discord site in Step #3.
+looping_interval = 60 # Frequency, in minutes, of checking messages for changes, updating, and deletion.
+reminders_channel_name = "reminders" # The name of the channel where the reminders will be sent.
 RSVP_deadline = 24 # The number of hours before a session when RSVPs are due, otherwise the session will be cancelled.
-remind_interval = 24 # How frequently the bot will remind players who have not RSVPed yet
+remind_interval = 48 # How frequently the bot will remind players who have not RSVPed yet in hours.
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # --------------
 #   Initialize

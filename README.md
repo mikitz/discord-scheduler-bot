@@ -62,55 +62,44 @@ If you have any questions while setting it up, just message me on [Reddit](https
 ### Step #1: Creating a Repl
 1. Go to [replit.com](https://replit.com/~) and create an account or sign in
 2. Create a new Repl by clicking the ➕ in the upper-right corner
-3. Select Python as the Language
-4. Give it whatever title you want
-5. Hi the `+ Create Repl` button
-### Step #2: Setting up `main.py`
-1. You'll see a file called `main.py`
-2. Open it and copy and paste the code from the bot's [main.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/main.py)
-3. Hit `Ctrl+S` to save.
-### Step #3: Setting up `keep_alive.py`
-1. Create a new file called `keep_alive.py`
-2. Open it and copy and paste the code from the bot's [keep_alive.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/keep_alive.py)
-3. Hit `Ctrl+S` to save.
-### Step #4: Setting up `restart.py`
-1. Create a new file called `restart.py`
-2. Open it and copy and paste the code from the bot's [restart.py](https://github.com/mikitz/discord-scheduler-bot/blob/main/restart.py)
-3. Hit `Ctrl+S` to save.
-### Step #5: Modify the Code in `main.py`
+3. In the upper-right corner of the popup, click the `Import from GitHub` button.
+4. Copy and paste `https://github.com/mikitz/discord-scheduler-bot` into the *GitHub URL* field.
+5. Hi the white on blue `+ Import from GitHub` button
+### Step #2: Create a Discord bot on your Discord account
+1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from *00:02:00 to 00:03:02* to do so.
+2. Go change line 24 in `main.py` to whatever name you gave it.
+### Step #3: Modify the Code in `main.py`
 1. Open `main.py` and find the section that is between the lines that have numerous ⚠️ emoji on them (lines 19 - 30):
     - **⚠️ I have not tested this with any timezone other than the Chicago and Seoul timezones.**
-    - **⚠️ You must change the below 4 variables, else the bot will *NOT* work on your server(s).**
+    - **⚠️ You must change the below 5 variables that are marked with a ❗, else the bot will *NOT* work on your server(s).**
+    - **⚠️ The remaining 4 can be unchanged if you wish.** 
     - You can find your timezone(s) in [timezones.txt](https://github.com/mikitz/discord-scheduler-bot/blob/main/timezones.txt) by searching for a major city near the city you live in.
     - "CST" and "KST" are the names of those respective timezones. They could be anything you want, but remember this timezone will be displayed to all users on the server.
     ```
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     # Set these to whatever you need
-    tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # Add the timezones you'll be using
-    timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezone again, make sure they're the same as the above
-    game_master_role_name = "Game Master" # Enter the role name of your GM
-    player_role_name = "Player (Active)" # Enter the role name of the players
-    bot_name = "Sesh Time" # This must be the same as the name you gave it on Discord
-    looping_interval = 60 # Frequency of checking messages for changes, updating, deletion, and reminding players to RSVP in minutes
-    reminders_channel_name = "reminders" # The name of the channel where the reminders will be sent
+    tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # ❗ Add the timezones you'll be using.
+    timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # ❗ Add the timezones again; make sure they're the same as the above.
+    game_master_role_name = "Game Master" # ❗ Enter the role name of your GM.
+    player_role_name = "Player (Active)" # ❗ Enter the role name of the players.
+    bot_name = "Sesh Time" # ❗ This must be the same as the name you gave it on the Discord site in Step #3.
+    looping_interval = 60 # Frequency, in minutes, of checking messages for changes, updating, and deletion.
+    reminders_channel_name = "reminders" # The name of the channel where the reminders will be sent.
     RSVP_deadline = 24 # The number of hours before a session when RSVPs are due, otherwise the session will be cancelled.
-    remind_interval = 24 # How frequently the bot will remind players who have not RSVPed yet
+    remind_interval = 48 # How frequently the bot will remind players who have not RSVPed yet in hours.
     # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
     ```
 2. Hit `Ctrl+S` to save.
-### Step #6: Create a Discord bot on your Discord account
-1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from *00:02:00 to 00:03:02* to do so.
-2. Go change line 24 in `main.py` to whatever name you gave it.
-### Step #7: Copy your Discord Token
+### Step #4: Copy your Discord Token
 1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=182) from *00:03:02 to 00:03:10* to copy the token.
 2. Click on the 🔒 icon on the left side of the window to open *Secrets (Environment Variables)* on Replit
 3. Set the `key` as **TOKEN**
 4. Set the `value` as the Discord token you copied in Step 6.1
 5. Click the `Add new secret` button
-### Step #8: Ensure the Bot stays up forever
+### Step #5: Ensure the Bot stays up forever
 1. Run the bot by clicking ` Run` on Replit.
 2. Copy the URL you see in the upper-right corner, just above the text *Hello, I am alive!*
 3. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=3794) from *01:03:14 to 01:05:20* for the rest.
-### Step #9: Run the Bot
+### Step #6: Run the Bot
 1. Run the bot and forget about it (Unless it goes down for whatever reason)    
     - Don't worry, the bot can still monitor all the events it needs to, as long as you bring it back online.
