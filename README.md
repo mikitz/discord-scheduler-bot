@@ -64,7 +64,7 @@ If you have any questions while setting it up, just message me on [Reddit](https
 2. Create a new Repl by clicking the ➕ in the upper-right corner
 3. In the upper-right corner of the popup, click the `Import from GitHub` button.
 4. Copy and paste `https://github.com/mikitz/discord-scheduler-bot` into the *GitHub URL* field.
-5. Hi the white on blue `+ Import from GitHub` button
+5. Hit the white on blue `+ Import from GitHub` button
 ### Step #2: Create a Discord bot on your Discord account
 1. Watch this [YouTube video](https://youtu.be/SPTfmiYiuok?t=120) from *00:02:00 to 00:03:02* to do so.
 2. Go change line 24 in `main.py` to whatever name you gave it.
