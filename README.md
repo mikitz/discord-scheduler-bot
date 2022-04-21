@@ -71,7 +71,7 @@ If you have any questions while setting it up, just message me on [Reddit](https
 ### Step #3: Invie the Bot to your Server
 1. Go to [Discord.com](https://discord.com/developers/applications/961225387269029928/oauth2/url-generator)
 2. Check `bot`
-3. Check `Administartor`
+3. Check `Administrator`
 4. Navigate to the URL at the bottom of the page
 5. Select a server that you own and add it
 ### Step #4: Modify the Code in `main.py`
