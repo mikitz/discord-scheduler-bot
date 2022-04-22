@@ -332,7 +332,7 @@ async def auto_cancel_event():
         else:
             print(f"No messages found for Server {guild}")
 auto_cancel_event.start()
-@tasks.loop(minutes=remind_interval)
+@tasks.loop(hours=remind_interval)
 async def remind_non_RSVPed_players():
     print("--------------------")
     print("Reminding Players...")
