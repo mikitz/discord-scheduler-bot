@@ -18,15 +18,15 @@ from dateutil.tz import gettz
 import pytz
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # Set these to whatever you need
-tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # ❗ Add the timezones you'll be using.
-timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # ❗ Add the timezones again; make sure they're the same as the above.
-game_master_role_name = "Game Master" # ❗ Enter the role name of your GM.
-player_role_name = "Player (Active)" # ❗ Enter the role name of the players.
-bot_name = "Sesh Time" # ❗ This must be the same as the name you gave it on the Discord site in Step #3.
+tzinfos = {"CST": gettz("America/Chicago"), "KST": gettz("Asia/Seoul")} # Add the timezones you'll be using.
+timezones = {"CST": "America/Chicago", "KST": "Asia/Seoul"} # Add the timezones again; make sure they're the same as the above.
+game_master_role_name = "Game Master" # Enter the role name of your GM.
+player_role_name = "Player (Active)" # Enter the role name of the players.
+bot_name = "Sesh Time" # This must be the same as the name you gave it on the Discord site in Step #2.
 looping_interval = 60 # Frequency, in minutes, of checking messages for changes, updating, and deletion.
 reminders_channel_name = "reminders" # The name of the channel where the reminders will be sent.
 RSVP_deadline = 24 # The number of hours before a session when RSVPs are due, otherwise the session will be cancelled.
-remind_interval = 48 # How frequently the bot will remind players who have not RSVPed yet in hours.
+remind_interval = 60 # How frequently the bot will remind players who have not RSVPed yet in hours.
 # ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 # --------------
 #   Initialize
@@ -37,6 +37,7 @@ intents.reactions = True
 activity = discord.Activity(type=discord.ActivityType.listening, name="!sb") # Set up the bot's activity
 bot = commands.Bot(command_prefix='!sb ', intents=intents, activity=activity, status=discord.Status.online) # Initialize Bot Commands
 bot.remove_command('help') # Remove the default command
+hours_counter = 0
 # ----------
 #   Logger
 # ----------
@@ -92,16 +93,20 @@ async def on_ready():
     print("----------------------------------------------------")
     print(f"{bot_name} is running with the the below...")
     print("----------------------------------------------------")
+    # db['Seafaring Shenanigans'][0]['guild_id'] = 733495705468928061 # Add the missing Guild ID
     # print("Keys:", db.keys()) # Uncomment this to delete all data from the Database
     # for key in db.keys():
     #     print(f'Deleting Key for Server "{key}"')
     #     del db[key]
+        # for message in db[key]:
+            # print("\nMessage:", message)
     print("Bot Name:", bot_name)
     print("Timezones:", timezones)
     print("Game Master Role Name:", game_master_role_name)
     print("Player Role Name:", player_role_name)
     print("Looping Interval:", looping_interval, "minute(s)")
     print("Reminders Channel:", reminders_channel_name)
+    print("Remind Interval:", remind_interval, "hour(s)")
 # Function that runs when a reaction is added
 @bot.event
 async def on_reaction_add(reaction, user):
@@ -362,8 +367,8 @@ async def remind_non_RSVPed_players():
                 local_time = datetime.datetime.now(pytz.timezone(timezones.get(tz))) # Get local time and convert it to the timezone of the event
                 for player in players:
                     player_name = player.name
-                    for reactions in reactions:
-                        users = await reactions.users().flatten()
+                    for reaction in reactions:
+                        users = await reaction.users().flatten()
                         print("Non-RSVPed Players (BEFORE):", non_RSVPed_players)
                         if player_name in str(non_RSVPed_players): continue # Skip this player b/c they'are already going to be reminded for this Session
                         if len(users) <= 1 and local_time <= datetime_object - datetime.timedelta(hours=RSVP_deadline):
@@ -455,13 +460,21 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
                 absentees.append(user.name) # Apppend user to the Absentees list if they have confirmed absence
                 if game_master_role_name in str(user.roles): 
                     game_master = True
-    message_attendees = len(attendees) - 1 # Get the number of current Attendees less the Bot
-    message_absentees = len(absentees) - 1 # Get the number of current Absentees less the Bot
+    message_attendees = len(attendees) # Get the number of current Attendees less the Bot
+    message_absentees = len(absentees) # Get the number of current Absentees less the Bot
+    # Attendees
+    print("DB Attendees:", db_msg_attendees)
+    print("Message Attendees:", message_attendees)
+    # Absentees
+    print("DB Absentees:", db_msg_absentees)
+    print("Message Absentees:", message_absentees)
+    
     if db_msg_absentees == message_absentees and db_msg_attendees == message_attendees: return # If they are the same, return b/c nothing needs to be done
-    # if message_attendees
     # Get Discord Roles
     game_master_role = discord.utils.get(guild.roles, name=game_master_role_name)
     player_active_role = discord.utils.get(guild.roles, name=player_role_name)
+    print("Player (Active):", player_active_role)
+    print("Gamemaster Role:", game_master_role)
     # Determine what message to send based on Reaction counts of the message
     status = 'pending' # Set up Status in case none of the below is met
     # Cancel Session
@@ -481,7 +494,7 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
     # Session is a go!
     elif message_attendees >= min_players: # Confirm the Session because the number of players who confirmed attendance is equal to or greater than the minimum required
         await message.channel.send(
-            content = f'{player_active_role.mention} {game_master.mention} \n *SESSION CONFIRMED* -- **{title}** is *CONFIRMED* for **{date}** at **{time}**!', 
+            content = f'{player_active_role.mention} {game_master_role.mention} \n *SESSION CONFIRMED* -- **{title}** is *CONFIRMED* for **{date}** at **{time}**!', 
             allowed_mentions = discord.AllowedMentions(roles=True)
         )
         status = 'confirmed'
@@ -521,7 +534,8 @@ async def send_message_based_on_reactions(message_id, channel_id, guild_id):
         "date": date,
         "time": time,
         "min_players": min_players,
-        "group_size": group_size
+        "group_size": group_size,
+        "guild_id": guild_id
     }
     db[str(guild)][msg_index] = message_object
 # -----------------
@@ -531,9 +545,10 @@ try:
     keep_alive() # Start the HTTP server so that it runs 24/7
     bot.run(os.getenv("TOKEN")) # Start the bot
 except discord.HTTPException as e:
-    print("Message:", e.text)
+    print("\n\n\n BLOCKED BY HTTP EXCEPTION \n RESTARTING IN 10 SECONDS \n")
+    # print("Message:", e.text)
     print("Status:", e.status)
     print("Code:", e.code)
-    print("\n\n\n BLOCKED BY HTTP EXCEPTION \n RESTARTING IN 60 SECONDS \n\n\n")
+    print("\n")
     os.system("python restart.py")
     os.system("kill 1")
